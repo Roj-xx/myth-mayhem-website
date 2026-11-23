@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.superpowers/
+.vercel/
+.playwright-mcp/
+.impeccable/review/
+.impeccable/mocks/

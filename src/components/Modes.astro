@@ -1,0 +1,39 @@
+---
+const modes = [
+  { name: 'Tutorial', status: 'Available', text: 'One guided match that teaches you lanes, summon points and Alay as you play. No timer.' },
+  { name: 'Vs AI', status: 'Available', text: 'Practise against the computer on Baguhan (Easy), Mandirigma (Normal) or Bagani (Hard).' },
+  { name: 'Casual', status: 'Available', text: 'Make a room code and play a friend online. Quick Match against other players is coming soon.' },
+  { name: 'Ranked', status: 'Coming soon', text: 'Climb from Baguhan through Mandirigma, Bagani and Datu to Maalamat. Unlocks at level 5.' },
+  { name: 'Story', status: 'Coming soon', text: "Play through both Inheritors' paths, Separation and Control." },
+];
+---
+<section class="modes chapter pane" aria-labelledby="modes-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="modes-title">Ways to play</h2>
+    </div>
+    <ul class="list">
+      {modes.map((m) => (
+        <li class:list={{ soon: m.status !== 'Available' }}>
+          <h3>{m.name}</h3>
+          <p class="status">{m.status}</p>
+          <p class="text">{m.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .modes { border-block: var(--muntin-w) solid var(--muntin); }
+  .head { margin-bottom: var(--s5); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  li { display: grid; gap: var(--s1) var(--s5); padding-block: var(--s5); border-top: 1.5px solid var(--capiz-deep); }
+  li:last-child { border-bottom: 1.5px solid var(--capiz-deep); }
+  @media (min-width: 760px) { li { grid-template-columns: 220px 140px 1fr; align-items: baseline; } }
+  h3 { font-size: 1.75rem; }
+  .status { margin: 0; font-weight: 600; color: var(--ink); }
+  .soon .status { color: var(--ink-soft); font-weight: 400; }
+  .soon h3 { color: var(--ink-soft); }
+  .text { margin: 0; color: var(--ink-soft); max-width: 56ch; }
+</style>

@@ -1,0 +1,105 @@
+---
+import { site } from '../config/site';
+const { android, windows } = site.downloads;
+const icons = {
+  android: 'M7 9h10v8.5a1.5 1.5 0 0 1-1.5 1.5H15v2.5a1 1 0 1 1-2 0V19h-2v2.5a1 1 0 1 1-2 0V19h-.5A1.5 1.5 0 0 1 7 17.5V9Zm-2.5 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1Zm15 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1ZM7.2 8a4.9 4.9 0 0 1 2.4-3.6L8.7 2.8a.4.4 0 1 1 .7-.4l.9 1.6a5.3 5.3 0 0 1 3.4 0l.9-1.6a.4.4 0 1 1 .7.4l-.9 1.6A4.9 4.9 0 0 1 16.8 8H7.2Zm2.8-2a.7.7 0 1 0 0 1.4.7.7 0 0 0 0-1.4Zm4 0a.7.7 0 1 0 0 1.4.7.7 0 0 0 0-1.4Z',
+  windows: 'M3 5.1 10 4v7.3H3V5.1Zm8-1.3L21 2.5v8.8H11V3.8ZM3 12.7h7V20l-7-1.1v-6.2Zm8 0h10v8.8l-10-1.3v-7.5Z',
+};
+const buttons = [
+  { ...android, os: 'Android', icon: icons.android },
+  { ...windows, os: 'Windows', icon: icons.windows },
+];
+const live = buttons.filter((b) => b.available);
+const panes = Array.from({ length: 12 });
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap grid">
+    <div class="copy">
+      <h1 id="hero-title">
+        <picture>
+          <source srcset="/media/logo.avif" type="image/avif" />
+          <img src="/media/logo.webp" alt="Myth Mayhem" width="900" height="300" />
+        </picture>
+      </h1>
+      <p class="pitch">{site.pitch}</p>
+      <div id="download" class="downloads">
+        {live.map((b) => (
+          <a class="btn btn-alay" href={b.url}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d={b.icon} /></svg>
+            {b.label}
+          </a>
+        ))}
+        <p class="meta">
+          Version {site.version}{live.map((b) => ` · ${b.os} ${b.file}, ${b.size}`).join('')}
+          {buttons.filter((b) => !b.available).map((b) => <><br />{b.os} build coming soon.</>)}
+        </p>
+      </div>
+      <p class="judges"><a href="/docs">Read the design documents</a> or <a href="#install">get install help</a>.</p>
+    </div>
+
+    <div class="window" aria-hidden="true">
+      <picture>
+        <source srcset={`${site.poster}.avif`} type="image/avif" />
+        <img class="keyart" src={`${site.poster}.webp`} alt="" width="1600" height="2000" fetchpriority="high" />
+      </picture>
+      {site.trailer && <video class="trailer" muted loop playsinline preload="none" data-src={site.trailer}></video>}
+      <div class="panes">{panes.map((_, i) => <span style={`--i:${i}`}></span>)}</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Load the trailer only when motion and data use are welcome; the key art stays otherwise.
+  function startTrailer() {
+    const v = document.querySelector<HTMLVideoElement>('.hero .trailer');
+    if (!v || v.src) return;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (calm || saveData) return;
+    v.src = v.dataset.src!;
+    v.addEventListener('playing', () => v.classList.add('on'), { once: true });
+    v.play().catch(() => {}); // autoplay blocked: the key art stays
+  }
+  document.addEventListener('astro:page-load', startTrailer);
+</script>
+
+<style>
+  .hero { padding-block: var(--s6) var(--s7); overflow: hidden; }
+  .grid { display: grid; gap: var(--s5); align-items: center; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 5fr 7fr; gap: var(--s7); min-height: min(80svh, 760px); } }
+
+  .copy { display: grid; gap: var(--s5); }
+  h1 img { width: min(100%, 480px); height: auto; }
+  .pitch { font-size: clamp(1.125rem, 2vw, 1.375rem); line-height: 1.5; max-width: 34ch; margin: 0; }
+  .downloads { display: flex; flex-wrap: wrap; gap: var(--s3); scroll-margin-top: 96px; }
+  .downloads .btn { min-height: 52px; }
+  .meta { flex-basis: 100%; margin: 0; color: var(--paper-soft); font-size: .9375rem; font-variant-numeric: tabular-nums; }
+  .judges { margin: 0; color: var(--paper-soft); }
+  .judges a { color: var(--paper); }
+
+  /* the capiz window: narra frame, muntins cross the art, pearl panes lit from behind */
+  .window { position: relative; isolation: isolate; aspect-ratio: 4 / 3; border: 10px solid var(--narra-raised); background: var(--narra-raised); overflow: hidden; }
+  .keyart { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+  /* the trailer replaces the key art inside the window once it plays */
+  .trailer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s var(--ease); }
+  .trailer.on { opacity: 1; }
+  .panes { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
+  .panes span {
+    box-shadow: inset 0 0 0 calc(var(--muntin-w) / 2) var(--narra-raised);
+    background:
+      radial-gradient(ellipse at 50% 40%, rgb(255 248 232 / .34), rgb(238 230 216 / .12) 60%, rgb(220 208 189 / .28)),
+      conic-gradient(from 210deg at 70% 30%, rgb(255 240 250 / .10), rgb(230 245 255 / .10), rgb(255 236 200 / .10), rgb(255 240 250 / .10));
+    animation: warm .7s var(--ease) calc(var(--i) * 60ms + 150ms) both;
+  }
+  @keyframes warm { from { opacity: 0; } 55% { opacity: 1; filter: brightness(1.6); } }
+
+  @media (max-width: 899px) {
+    .hero { padding-top: var(--s4); }
+    .window { order: -1; aspect-ratio: 16 / 9; border-width: 6px; }
+    .keyart { object-position: 50% 14%; }
+    h1 img { width: min(100%, 300px); }
+    .copy { gap: var(--s4); }
+    .downloads .btn { flex: 1 1 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { .panes span { animation: none; } }
+</style>

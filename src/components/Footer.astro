@@ -1,0 +1,31 @@
+---
+import { site } from '../config/site';
+---
+<footer class="foot">
+  <div class="wrap grid">
+    <div>
+      <h2 class="visually-hidden">Credits</h2>
+      <ul class="credits">{site.credits.map((c) => <li>{c}</li>)}</ul>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="/#download">Download</a></li>
+        <li><a href="/cards">Card gallery</a></li>
+        <li><a href="/docs">Design docs</a></li>
+        <li><a href="/#install">Install help</a></li>
+      </ul>
+    </nav>
+    <p class="fine">Myth Mayhem v{site.version}. A student game built on Philippine mythology.</p>
+  </div>
+</footer>
+
+<style>
+  .foot { background: var(--muntin); color: var(--paper-soft); padding-block: var(--s7); font-size: .9375rem; }
+  .grid { display: grid; gap: var(--s6); }
+  @media (min-width: 768px) { .grid { grid-template-columns: 2fr 1fr; } .fine { grid-column: 1 / -1; } }
+  .credits { list-style: none; margin: 0; padding: 0; color: var(--paper); font-family: var(--display); font-size: 1.25rem; line-height: 1.4; display: grid; gap: var(--s2); }
+  nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s1); }
+  nav a { display: inline-flex; min-height: 32px; align-items: center; color: var(--paper-soft); }
+  nav a:hover { color: var(--paper); }
+  .fine { margin: 0; }
+</style>

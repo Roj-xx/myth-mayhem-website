@@ -1,0 +1,198 @@
+---
+import cards from '../data/cards.json';
+const card = (id: string) => cards.find((c) => c.id === id)!;
+const tiyanak = card('MM-CORE-005');
+const diwata = card('MM-CORE-003');
+const kulam = card('MM-CORE-025');
+const kapre = card('MM-CORE-019');
+const intramuros = card('MM-CORE-034');
+
+// Each step is one board state. Numbers follow the User Manual.
+const steps = [
+  { title: 'Kara y Krus', text: 'An agimat coin decides who goes first. Whoever goes second gets 1 extra summon point and 6 starting cards instead of 5, to make up for it.' },
+  { title: 'Summon points', text: 'Summon points (SP) pay for your cards. You get 3 on your first turn, then 2 more every turn, and unused points carry over up to 10. Your god also gains a Charge.' },
+  { title: 'Play to a lane', text: 'There are three lanes. Each holds one of your creatures and one Building. Tiyanak costs 2 SP, so you have 1 left.' },
+  { title: 'Alay: give something up', text: 'Short on points? Offer a card from your hand for +1 SP, or a creature on the board for half its cost. Offered Diwata also heals you 9 HP. There is no taking it back. Up to 2 offerings and +3 SP a turn; the first also charges your god.' },
+  { title: 'Claim the land', text: 'One Domain sits in the shared middle slot and helps whoever played it. Nature beats Human, Human beats Spirit, Spirit beats Nature. Intramuros is Human: your creatures take 3 less damage from strikes.' },
+  { title: 'End turn: creatures strike', text: 'From round 2, when you end your turn your creatures strike on their own, lane by lane from left to right. Each hits the first thing in front of it: a Bantayog, then a creature, then a Building, then the rival Inheritor. Lane 2 is open, so Tiyanak hits for 6.' },
+];
+// Board state per step: [sp, charges, rivalHp, placed, offered, domain, strike]
+const states = [
+  [0, 0, 100, 0, 0, 0, 0],
+  [3, 1, 100, 0, 0, 0, 0],
+  [1, 1, 100, 1, 0, 0, 0],
+  [2, 2, 100, 1, 1, 0, 0],
+  [0, 2, 100, 1, 1, 1, 0],
+  [0, 2, 94, 1, 1, 1, 1],
+];
+const art = (c: { art: string }) => `${c.art}.webp`;
+---
+<section class="match chapter" aria-labelledby="match-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="match-title">How a match plays</h2>
+      <p class="lede">Six to ten minutes, three lanes, one resource. Step through a first turn.</p>
+    </div>
+
+    <div class="stage" data-states={JSON.stringify(states)}>
+      <div class="board" data-step="0" aria-hidden="true">
+        <div class="side rival">
+          <span class="who">Rival Inheritor</span>
+          <span class="hp"><b class="rival-hp">100</b> HP</span>
+        </div>
+        <div class="lanes lattice">
+          <div class="slot"></div>
+          <div class="slot lane2 target"></div>
+          <div class="slot"><img src={art(kapre)} alt="" width="480" height="672" loading="lazy" /></div>
+        </div>
+        <div class="domain">
+          <div class="slot dom"><img src={art(intramuros)} alt="" width="480" height="672" loading="lazy" /></div>
+        </div>
+        <div class="lanes lattice">
+          <div class="slot"></div>
+          <div class="slot lane2 mine"><img class="tiyanak" src={art(tiyanak)} alt="" width="480" height="672" loading="lazy" /></div>
+          <div class="slot"></div>
+        </div>
+        <div class="side you">
+          <span class="who">You</span>
+          <span class="sp" title="Summon points"><b class="sp-n">0</b> SP <i class="pips">{Array.from({ length: 10 }).map(() => <i></i>)}</i></span>
+          <span class="charges">God <i class="pips">{[0, 1, 2].map(() => <i></i>)}</i></span>
+        </div>
+        <div class="hand">
+          <img class="in-hand tiyanak-h" src={art(tiyanak)} alt="" width="480" height="672" loading="lazy" />
+          <img class="in-hand diwata" src={art(diwata)} alt="" width="480" height="672" loading="lazy" />
+          <img class="in-hand" src={art(kulam)} alt="" width="480" height="672" loading="lazy" />
+        </div>
+        <div class="coin"><span>Kara</span><span>Krus</span></div>
+      </div>
+
+      <div class="explain pane">
+        <ol class="dots" aria-label="Steps">
+          {steps.map((s, i) => (
+            <li><button type="button" aria-current={i === 0 ? 'step' : undefined} aria-label={`Step ${i + 1}: ${s.title}`}></button></li>
+          ))}
+        </ol>
+        <div aria-live="polite">
+          {steps.map((s, i) => (
+            <div class="step" hidden={i !== 0}>
+              <p class="visually-hidden">Step {i + 1} of {steps.length}</p>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </div>
+          ))}
+        </div>
+        <dl class="readout">
+          <div><dt>Your SP</dt><dd data-r="sp">0</dd></div>
+          <div><dt>God charges</dt><dd data-r="charges">0 of 3</dd></div>
+          <div><dt>Rival HP</dt><dd data-r="hp">100</dd></div>
+        </dl>
+        <div class="nav-btns">
+          <button class="btn btn-line prev" type="button" disabled>Back</button>
+          <button class="btn btn-line next" type="button">Next step</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initMatch() {
+    const stage = document.querySelector<HTMLElement>('.match .stage');
+    if (!stage) return;
+    const states: number[][] = JSON.parse(stage.dataset.states!);
+    const board = stage.querySelector<HTMLElement>('.board')!;
+    const stepEls = [...stage.querySelectorAll<HTMLElement>('.step')];
+    const dots = [...stage.querySelectorAll<HTMLButtonElement>('.dots button')];
+    const prev = stage.querySelector<HTMLButtonElement>('.prev')!;
+    const next = stage.querySelector<HTMLButtonElement>('.next')!;
+    let at = 0;
+
+    const show = (i: number) => {
+      at = Math.max(0, Math.min(states.length - 1, i));
+      const [sp, charges, rivalHp, placed, offered, domain, strike] = states[at];
+      Object.assign(board.dataset, { step: String(at), placed, offered, domain, strike });
+      stepEls.forEach((s, n) => (s.hidden = n !== at));
+      stage.querySelector('[data-r=sp]')!.textContent = String(sp);
+      stage.querySelector('[data-r=charges]')!.textContent = `${charges} of 3`;
+      stage.querySelector('[data-r=hp]')!.textContent = String(rivalHp);
+      board.querySelector('.sp-n')!.textContent = String(sp);
+      board.querySelector('.rival-hp')!.textContent = String(rivalHp);
+      board.querySelectorAll('.sp .pips i').forEach((p, n) => p.classList.toggle('on', n < sp));
+      board.querySelectorAll('.charges .pips i').forEach((p, n) => p.classList.toggle('on', n < charges));
+      stepEls.forEach((s, n) => (s.hidden = n !== at));
+      dots.forEach((d, n) => (n === at ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current')));
+      prev.disabled = at === 0;
+      next.textContent = at === states.length - 1 ? 'Start over' : 'Next step';
+    };
+
+    prev.addEventListener('click', () => show(at - 1));
+    next.addEventListener('click', () => show(at === states.length - 1 ? 0 : at + 1));
+    dots.forEach((d, n) => d.addEventListener('click', () => show(n)));
+    show(0);
+  }
+  document.addEventListener('astro:page-load', initMatch);
+</script>
+
+<style>
+  .stage { display: grid; gap: var(--s5); }
+  @media (min-width: 960px) { .stage { grid-template-columns: 7fr 5fr; align-items: stretch; gap: var(--muntin-w); background: var(--muntin); padding: var(--muntin-w); } }
+
+  /* the board */
+  .board { position: relative; display: grid; gap: var(--s3); padding: var(--s5); background: var(--narra-raised); --card: clamp(56px, 12vw, 104px); }
+  .side { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s3); color: var(--paper-soft); font-size: .9375rem; font-variant-numeric: tabular-nums; }
+  .side b { color: var(--paper); font-size: 1.25rem; }
+  .who { font-family: var(--display); font-size: 1.125rem; color: var(--paper); }
+  .lanes { grid-template-columns: repeat(3, 1fr); }
+  .slot { height: calc(var(--card) * 1.4 + 16px); background: color-mix(in srgb, var(--capiz) 7%, var(--narra)); display: grid; place-items: center; overflow: hidden; transition: background-color .32s var(--ease), box-shadow .32s var(--ease); }
+  .slot img { width: var(--card); border-radius: 6px; }
+  .domain { display: grid; justify-items: center; }
+  .dom { width: calc(var(--card) + 24px); background: var(--muntin); }
+  .dom img, .tiyanak { opacity: 0; scale: .8; transition: opacity .32s var(--ease), scale .32s var(--ease), translate .32s var(--ease); }
+  [data-domain='1'] .dom img, [data-placed='1'] .tiyanak { opacity: 1; scale: 1; }
+  [data-step='2'] .lane2.mine, [data-step='4'] .dom { box-shadow: inset 0 0 0 2px var(--lamp); }
+
+  .pips { display: inline-flex; gap: 3px; margin-left: var(--s2); vertical-align: middle; }
+  .pips i { width: 8px; height: 14px; box-shadow: inset 0 0 0 1.5px var(--paper-soft); transition: background-color .2s var(--ease), box-shadow .2s var(--ease); }
+  .pips i.on { background: var(--lamp); box-shadow: none; }
+  .charges .pips i { width: 12px; height: 12px; border-radius: 50%; }
+
+  .hand { display: flex; justify-content: center; gap: var(--s2); padding-top: var(--s2); }
+  .in-hand { width: calc(var(--card) * .8); border-radius: 5px; transition: opacity .32s var(--ease), translate .32s var(--ease), filter .32s var(--ease); }
+  [data-placed='1'] .tiyanak-h { opacity: 0; translate: 0 -24px; }
+  [data-offered='1'] .diwata { opacity: .25; translate: 0 8px; filter: sepia(1) hue-rotate(-40deg) saturate(3); }
+
+  /* the strike: Tiyanak lunges up its open lane */
+  [data-strike='1'] .tiyanak { animation: strike .6s var(--ease) .1s; }
+  @keyframes strike { 40% { translate: 0 calc(-1 * (var(--card) * 2.6)); } }
+  [data-strike='1'] .lane2.target { background: color-mix(in srgb, var(--alay) 35%, var(--narra)); }
+  [data-strike='1'] .rival .hp b { color: var(--alay-hover); }
+
+  .coin { position: absolute; inset: 0; display: grid; grid-auto-flow: column; place-content: center; gap: var(--s2); background: color-mix(in srgb, var(--narra) 55%, transparent); opacity: 0; pointer-events: none; transition: opacity .32s var(--ease); }
+  [data-step='0'] .coin { opacity: 1; }
+  .coin span { display: grid; place-items: center; width: 96px; height: 96px; flex: none; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe2a6, var(--lamp) 60%, #c98a2e); color: var(--ink); font: 400 1.25rem/1 var(--display); box-shadow: inset 0 0 0 5px #b97c25, inset 0 0 0 8px #ffdb93; }
+  .coin span + span { background: radial-gradient(circle at 35% 30%, #fff, var(--capiz) 60%, #cbbca5); box-shadow: inset 0 0 0 5px #a8977f, inset 0 0 0 8px #fff8ec; }
+  [data-step='0'] .coin span:first-child { animation: flip 1.2s var(--ease) both; }
+  @keyframes flip { from { transform: rotateY(0); } to { transform: rotateY(720deg); } }
+
+  /* the explanation */
+  .explain { display: flex; flex-direction: column; gap: var(--s5); padding: var(--s6); }
+  .nav-btns { margin-top: auto; }
+  @media (min-width: 960px) { .explain { justify-content: center; } .nav-btns { margin-top: var(--s3); } }
+  .readout { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); margin: 0; padding-top: var(--s4); border-top: 1.5px solid var(--capiz-deep); font-variant-numeric: tabular-nums; }
+  .readout dt { font-size: .875rem; color: var(--ink-soft); }
+  .readout dd { margin: 0; font: 400 1.75rem/1.1 var(--display); }
+  @media (max-width: 959px) { .readout { display: none; } }
+  @media (max-width: 959px) { .explain { order: -1; padding: var(--s4); gap: var(--s3); } .board { --card: clamp(40px, 10.5vw, 64px); padding: var(--s3); gap: var(--s2); } .stage { gap: var(--s3); } }
+  .dots { display: flex; gap: var(--s1); list-style: none; padding: 0; margin: 0; }
+  .dots button { width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dots button::before { content: ''; width: 100%; height: 6px; background: var(--capiz-deep); transition: background-color .2s var(--ease); }
+  .dots button[aria-current]::before { background: var(--ink); }
+
+  .step h3 { font-size: clamp(1.75rem, 3vw, 2.25rem); margin-bottom: var(--s3); }
+  .step p:last-child { margin: 0; max-width: 46ch; }
+  .step { animation: show .32s var(--ease); }
+  @keyframes show { from { opacity: 0; translate: 12px 0; } }
+  .nav-btns { display: flex; gap: var(--s2); }
+  .nav-btns .btn { flex: 1; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+</style>

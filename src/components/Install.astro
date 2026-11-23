@@ -1,0 +1,50 @@
+---
+import { site } from '../config/site';
+const { android, windows } = site.downloads;
+---
+<section id="install" class="install chapter" aria-labelledby="install-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="install-title">Install and requirements</h2>
+      <p class="lede">The game isn't in an app store yet, so your device will ask you to confirm the install once. That's expected.</p>
+    </div>
+
+    <div class="cols lattice">
+      <article class="pane">
+        <h3>Android</h3>
+        <p class="req">Android 7.1 or newer, 64-bit (ARM64) phone or tablet. Download is {android.size}.</p>
+        <ol>
+          <li>Tap <a href={android.url}>{android.label}</a> and open the downloaded <strong>MythMayhem.apk</strong>.</li>
+          <li>If Android says installs from this source aren't allowed, tap <strong>Settings</strong>, turn on <strong>Allow from this source</strong> (also called <strong>Install unknown apps</strong>), then go back.</li>
+          <li>Tap <strong>Install</strong>, then <strong>Open</strong>.</li>
+        </ol>
+        <p class="soft">If Google Play Protect warns you, tap <strong>More details</strong>, then <strong>Install anyway</strong>.</p>
+      </article>
+
+      <article class="pane">
+        <h3>Windows</h3>
+        <p class="req">Windows 10 or 11, 64-bit, with a DirectX 11 or 12 graphics card. Download is {windows.available && windows.size !== 'TBC' ? windows.size : 'a ZIP file'}.</p>
+        <ol>
+          <li>{windows.available ? <>Click <a href={windows.url}>{windows.label}</a>.</> : <>Download <strong>MythMayhem-Windows.zip</strong> once the Windows build is out (coming soon).</>}</li>
+          <li>Right-click <strong>MythMayhem-Windows.zip</strong>, choose <strong>Extract All</strong>, and keep every file in the folder together.</li>
+          <li>Open the folder and run <strong>Myth Mayhem.exe</strong>.</li>
+          <li>If Windows SmartScreen says it protected your PC, click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
+        </ol>
+        <p class="soft">Running the game from inside the ZIP without extracting it won't work.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cols { grid-template-columns: 1fr; }
+  @media (min-width: 860px) { .cols { grid-template-columns: 1fr 1fr; } }
+  article { padding: var(--s6) var(--s5); }
+  @media (min-width: 860px) { article { padding: var(--s7) var(--s6); } }
+  h3 { font-size: 2rem; margin-bottom: var(--s3); }
+  .req { font-weight: 600; }
+  ol { padding-left: 1.25em; margin: 0 0 var(--s4); display: grid; gap: var(--s3); }
+  li::marker { font-family: var(--display); color: var(--ink-soft); }
+  .soft { color: var(--ink-soft); margin: 0; }
+  a { color: var(--alay); font-weight: 600; }
+</style>

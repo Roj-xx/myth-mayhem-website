@@ -1,0 +1,39 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { Font } from 'astro:assets';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
+import '../styles/global.css';
+
+interface Props { title?: string; description?: string }
+const { title, description = site.pitch } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: a Philippine mythology card battler`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#24140f" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL('/media/hero-1600.webp', Astro.site)} />
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-text" preload />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip visually-hidden" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main"><slot /></main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .skip:focus { position: fixed !important; top: 8px; left: 8px; width: auto; height: auto; clip-path: none; z-index: 100; padding: 8px 16px; background: var(--lamp); color: var(--ink); border-radius: 4px; }
+</style>

@@ -1,0 +1,37 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  { href: '/cards', label: 'Cards' },
+  { href: '/docs', label: 'Docs' },
+];
+---
+<header class="nav" transition:persist>
+  <div class="wrap bar">
+    <a href="/" class="logo" aria-label="Myth Mayhem home">
+      <picture>
+        <source srcset="/media/logo.avif" type="image/avif" />
+        <img src="/media/logo.webp" alt="" width="900" height="300" />
+      </picture>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+        <li><a class="btn btn-alay" href="/#download">Download</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--narra) 92%, transparent); border-bottom: var(--muntin-w) solid var(--muntin); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); min-height: 64px; }
+  .logo img { width: 132px; height: auto; }
+  ul { display: flex; align-items: center; gap: var(--s1); list-style: none; margin: 0; padding: 0; }
+  li a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s3); text-decoration: none; color: var(--paper-soft); font-weight: 500; }
+  li a:not(.btn):hover, li a[aria-current='page'] { color: var(--paper); }
+  li a[aria-current='page'] { text-decoration: underline; text-decoration-color: var(--lamp); text-decoration-thickness: 2px; }
+  .btn { min-height: 40px; padding: 0 var(--s4); margin-left: var(--s2); }
+  @media (max-width: 380px) { .logo img { width: 104px; } li a:not(.btn) { padding: 0 var(--s2); } }
+</style>

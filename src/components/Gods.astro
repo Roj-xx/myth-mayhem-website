@@ -1,0 +1,102 @@
+---
+import cards from '../data/cards.json';
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const gods = cards.filter((c) => c.type === 'god');
+---
+<section class="gods chapter pane" aria-labelledby="gods-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="gods-title">Pick a patron god</h2>
+      <p class="lede">Your god never fights on the board. It watches from above with a Passive that is always on, and an Active you charge up over three turns. Three are yours from the start; the rest come from the Tawag.</p>
+    </div>
+
+    <div class="picker">
+      <div class="tabs lattice" role="tablist" aria-label="Patron gods">
+        {gods.map((g, i) => (
+          <button role="tab" id={`tab-${g.id}`} aria-controls={`panel-${g.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} type="button">
+            <picture>
+              <source srcset={`/media/avatars/${slug(g.name)}.avif`} type="image/avif" />
+              <img src={`/media/avatars/${slug(g.name)}.webp`} alt="" width="640" height="640" loading="lazy" />
+            </picture>
+            <span>{g.name}</span>
+          </button>
+        ))}
+      </div>
+
+      {gods.map((g, i) => (
+        <div class="panel" role="tabpanel" id={`panel-${g.id}`} aria-labelledby={`tab-${g.id}`} hidden={i !== 0}>
+          <picture>
+            <source srcset={`/media/avatars/${slug(g.name)}.avif`} type="image/avif" />
+            <img src={`/media/avatars/${slug(g.name)}.webp`} alt={`${g.name}, patron god`} width="640" height="640" loading="lazy" />
+          </picture>
+          <div class="info">
+            <h3>{g.name}</h3>
+            <p class="role">{g.role} · {g.access === 'Starter' ? 'Starter god' : 'From the Tawag or crafted'}</p>
+            <dl>
+              <dt>Passive</dt><dd>{g.passive}</dd>
+              <dt>Active <span>(3 Charges)</span></dt><dd>{g.active}</dd>
+            </dl>
+            <p class="lore">{g.lore}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function initGods() {
+    const list = document.querySelector<HTMLElement>('.gods [role=tablist]');
+    if (!list) return;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        const jump = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
+        if (step == null && jump == null) return;
+        e.preventDefault();
+        select(tabs[jump ?? (i + step! + tabs.length) % tabs.length], true);
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initGods);
+</script>
+
+<style>
+  .gods { border-block: var(--muntin-w) solid var(--muntin); }
+  .picker { display: grid; gap: var(--s6); }
+  @media (min-width: 960px) { .picker { grid-template-columns: 5fr 6fr; align-items: start; gap: var(--s7); } }
+
+  /* 11 gods in 3 or 4 columns always leave one cell; a blank pane fills it so no hole shows */
+  .tabs { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 600px) { .tabs { grid-template-columns: repeat(4, 1fr); } }
+  .tabs::after { content: ''; background: var(--shell), var(--capiz-deep); }
+  [role=tab] { display: grid; justify-items: center; gap: var(--s1); padding: var(--s2) var(--s1) var(--s3); background: var(--shell), var(--capiz); border: 0; cursor: pointer; color: var(--ink); font: 500 .875rem/1.2 var(--text); transition: background-color .2s var(--ease); }
+  [role=tab] img { width: 64px; height: 64px; filter: saturate(.55); transition: filter .2s var(--ease), scale .2s var(--ease); }
+  [role=tab]:hover img { filter: none; }
+  [role=tab][aria-selected=true] { background-color: var(--lamp); }
+  [role=tab][aria-selected=true] img { filter: none; scale: 1.08; }
+  [role=tab]:focus-visible { outline-offset: -4px; outline-color: var(--ink); }
+
+  .panel { display: grid; gap: var(--s5); grid-template-columns: minmax(0, 1fr); animation: show .32s var(--ease); }
+  @media (min-width: 600px) { .panel { grid-template-columns: 200px 1fr; align-items: start; } }
+  @keyframes show { from { opacity: 0; translate: 0 8px; } }
+  .panel img { width: min(240px, 70vw); }
+  .info h3 { font-size: clamp(2rem, 4vw, 2.75rem); }
+  .role { color: var(--ink-soft); margin: var(--s1) 0 var(--s4); }
+  dl { margin: 0 0 var(--s4); display: grid; gap: var(--s1); }
+  dt { font-weight: 700; margin-top: var(--s2); }
+  dt span { font-weight: 400; color: var(--ink-soft); }
+  dd { margin: 0; max-width: 48ch; }
+  .lore { color: var(--ink-soft); font-size: .9375rem; max-width: 52ch; margin: 0; }
+</style>

@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import { docs } from '../../config/docs';
+---
+<Base title="Design documents" description="The Myth Mayhem Game Design Document, Development Roadmap and Player's Guide.">
+  <section class="wrap docs-index">
+    <div class="head">
+      <h1>Design documents</h1>
+      <p class="lede">Everything behind the game, readable in the browser. Judges: start with the Roadmap for the overview, then the GDD for the detail.</p>
+    </div>
+    <ul class="lattice list">
+      {docs.map((d) => (
+        <li class="pane">
+          <a href={`/docs/${d.slug}`}>
+            <h2>{d.name}</h2>
+            <p>{d.blurb}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .docs-index { padding-block: var(--s7) var(--chapter); }
+  h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
+  .list { list-style: none; margin: 0; grid-template-columns: 1fr; }
+  @media (min-width: 860px) { .list { grid-template-columns: repeat(3, 1fr); } }
+  li a { display: grid; gap: var(--s3); padding: var(--s6) var(--s5); height: 100%; text-decoration: none; color: var(--ink); transition: background-color .2s var(--ease); }
+  li a:hover { background: color-mix(in srgb, var(--lamp) 22%, var(--capiz)); }
+  h2 { font-size: 2rem; }
+  li p { margin: 0; color: var(--ink-soft); }
+</style>
