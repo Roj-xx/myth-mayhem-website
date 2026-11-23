@@ -17,8 +17,8 @@ export function initGallery() {
   const q = root.querySelector<HTMLInputElement>('input[name=q]')!;
   const sortChips = [...root.querySelectorAll<HTMLButtonElement>('[data-sort]')];
   let sortKey = 'id';
-  const typeChips = [...root.querySelectorAll<HTMLButtonElement>('[data-type]')];
-  const rarityChips = [...root.querySelectorAll<HTMLButtonElement>('[data-rarity]')];
+  const typeChips = [...root.querySelectorAll<HTMLButtonElement>('.chip[data-type]')];
+  const rarityChips = [...root.querySelectorAll<HTMLButtonElement>('.chip[data-rarity]')];
   const count = root.querySelector('[data-count]')!;
   const empty = root.querySelector<HTMLElement>('.empty')!;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
