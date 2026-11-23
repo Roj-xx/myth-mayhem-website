@@ -136,7 +136,7 @@ match. If time runs out, your turn ends, but your creatures still attack.
 Running out of time **3 turns in a row** loses the match. Against the AI, only your own
 turn is timed (the clock pauses while attacks play). The tutorial has no timer.
 
-*Release status: the tutorial copy, online reconnects and the emote button are still being play-tested, so wording and details may change.*
+*This guide matches version 0.3.0. The tutorial wording and the emote button are still being play-tested, so small details may change. See [Releases.md](/docs/releases) for what changed in each version.*
 
 ---
 
@@ -296,6 +296,7 @@ instead, more each time.
 
 | Mode | What it is |
 |---|---|
+| **Tutorial** | One guided match that teaches every mechanic, step by step. No timer. Start here! |
 | **Vs AI** | Practice against the computer on **Baguhan** (Easy), **Mandirigma** (Normal) or **Bagani** (Hard) |
 | **Casual** | Make a **room code** to play a friend, or use Quick Match *(coming soon)* against other players |
 | **Ranked** *(coming soon)* | Climb the tiers: **Baguhan → Mandirigma → Bagani → Datu → Maalamat**. Unlocks at level 5. |

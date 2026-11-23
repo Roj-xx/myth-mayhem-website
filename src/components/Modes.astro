@@ -7,17 +7,18 @@ const modes = [
   { name: 'Story', status: 'Coming soon', text: "Play through both Inheritors' paths, Separation and Control." },
 ];
 ---
-<section class="modes chapter pane" aria-labelledby="modes-title">
+<section class="modes chapter" aria-labelledby="modes-title">
   <div class="wrap">
-    <div class="head">
+    <div class="head reveal">
       <h2 id="modes-title">Ways to play</h2>
+      <p class="lede">Learn the ropes, practise against the AI, or call out a friend with a room code.</p>
     </div>
     <ul class="list">
-      {modes.map((m) => (
-        <li class:list={{ soon: m.status !== 'Available' }}>
+      {modes.map((m, i) => (
+        <li class:list={['glass glow-card lift reveal', { soon: m.status !== 'Available' }]} style={`--d:${i * 70}ms`}>
           <h3>{m.name}</h3>
-          <p class="status">{m.status}</p>
           <p class="text">{m.text}</p>
+          <p class="status">{m.status}</p>
         </li>
       ))}
     </ul>
@@ -25,15 +26,13 @@ const modes = [
 </section>
 
 <style>
-  .modes { border-block: var(--muntin-w) solid var(--muntin); }
-  .head { margin-bottom: var(--s5); }
-  .list { list-style: none; margin: 0; padding: 0; }
-  li { display: grid; gap: var(--s1) var(--s5); padding-block: var(--s5); border-top: 1.5px solid var(--capiz-deep); }
-  li:last-child { border-bottom: 1.5px solid var(--capiz-deep); }
-  @media (min-width: 760px) { li { grid-template-columns: 220px 140px 1fr; align-items: baseline; } }
-  h3 { font-size: 1.75rem; }
-  .status { margin: 0; font-weight: 600; color: var(--ink); }
-  .soon .status { color: var(--ink-soft); font-weight: 400; }
-  .soon h3 { color: var(--ink-soft); }
-  .text { margin: 0; color: var(--ink-soft); max-width: 56ch; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  li { padding: var(--s6) var(--s5); display: flex; flex-direction: column; gap: var(--s2); border-radius: var(--r); }
+  h3 { font-size: 1.875rem; }
+  .status { margin: auto 0 0; padding-top: var(--s4); font-size: .8125rem; font-weight: 600; color: var(--gold); display: flex; align-items: center; gap: var(--s2); }
+  .status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
+  .soon .status { color: var(--text-soft); }
+  .soon .status::before { box-shadow: none; }
+  .soon h3 { color: var(--text-soft); }
+  .text { margin: 0; color: var(--text-soft); font-size: .9375rem; }
 </style>

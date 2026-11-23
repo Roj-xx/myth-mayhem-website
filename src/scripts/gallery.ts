@@ -15,7 +15,8 @@ export function initGallery() {
   const grid = root.querySelector<HTMLUListElement>('.grid')!;
   const items = [...grid.children] as HTMLLIElement[];
   const q = root.querySelector<HTMLInputElement>('input[name=q]')!;
-  const sort = root.querySelector<HTMLSelectElement>('select[name=sort]')!;
+  const sortChips = [...root.querySelectorAll<HTMLButtonElement>('[data-sort]')];
+  let sortKey = 'id';
   const typeChips = [...root.querySelectorAll<HTMLButtonElement>('[data-type]')];
   const rarityChips = [...root.querySelectorAll<HTMLButtonElement>('[data-rarity]')];
   const count = root.querySelector('[data-count]')!;
@@ -39,7 +40,7 @@ export function initGallery() {
       li.hidden = !ok;
       if (ok) shown++;
     }
-    const key = sort.value;
+    const key = sortKey;
     const val = (li: HTMLLIElement) => (key === 'cost' ? Number(li.dataset.cost) : key === 'name' ? li.dataset.name! : Number(li.dataset.order));
     items.slice().sort((a, b) => {
       const x = val(a), y = val(b);
@@ -50,7 +51,11 @@ export function initGallery() {
   };
 
   q.addEventListener('input', apply);
-  sort.addEventListener('change', apply);
+  sortChips.forEach((chip) => chip.addEventListener('click', () => {
+    sortKey = chip.dataset.sort!;
+    sortChips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+    apply();
+  }));
   typeChips.forEach((chip) => chip.addEventListener('click', () => {
     type = chip.dataset.type!;
     typeChips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));

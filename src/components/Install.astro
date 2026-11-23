@@ -4,13 +4,13 @@ const { android, windows } = site.downloads;
 ---
 <section id="install" class="install chapter" aria-labelledby="install-title">
   <div class="wrap">
-    <div class="head">
+    <div class="head reveal">
       <h2 id="install-title">Install and requirements</h2>
       <p class="lede">The game isn't in an app store yet, so your device will ask you to confirm the install once. That's expected.</p>
     </div>
 
-    <div class="cols lattice">
-      <article class="pane">
+    <div class="cols">
+      <article class="glass glow-card reveal">
         <h3>Android</h3>
         <p class="req">Android 7.1 or newer, 64-bit (ARM64) phone or tablet. Download is {android.size}.</p>
         <ol>
@@ -21,7 +21,7 @@ const { android, windows } = site.downloads;
         <p class="soft">If Google Play Protect warns you, tap <strong>More details</strong>, then <strong>Install anyway</strong>.</p>
       </article>
 
-      <article class="pane">
+      <article class="glass glow-card reveal">
         <h3>Windows</h3>
         <p class="req">Windows 10 or 11, 64-bit, with a DirectX 11 or 12 graphics card. Download is {windows.available && windows.size !== 'TBC' ? windows.size : 'a ZIP file'}.</p>
         <ol>
@@ -37,14 +37,17 @@ const { android, windows } = site.downloads;
 </section>
 
 <style>
-  .cols { grid-template-columns: 1fr; }
+  .cols { display: grid; gap: var(--s4); grid-template-columns: 1fr; }
   @media (min-width: 860px) { .cols { grid-template-columns: 1fr 1fr; } }
   article { padding: var(--s6) var(--s5); }
   @media (min-width: 860px) { article { padding: var(--s7) var(--s6); } }
-  h3 { font-size: 2rem; margin-bottom: var(--s3); }
-  .req { font-weight: 600; }
-  ol { padding-left: 1.25em; margin: 0 0 var(--s4); display: grid; gap: var(--s3); }
-  li::marker { font-family: var(--display); color: var(--ink-soft); }
-  .soft { color: var(--ink-soft); margin: 0; }
-  a { color: var(--alay); font-weight: 600; }
+  h3 { font-size: 2.25rem; margin-bottom: var(--s3); }
+  .req { font-weight: 600; color: var(--text); }
+  ol { padding: 0; margin: 0 0 var(--s4); display: grid; gap: var(--s3); list-style: none; counter-reset: step; }
+  /* plain flowing text; the number sits in the left gutter so inline words and links stay inline */
+  li { counter-increment: step; position: relative; padding-left: 44px; min-height: 28px; color: var(--text-soft); }
+  li::before { content: counter(step); position: absolute; left: 0; top: -1px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line-gold); color: var(--gold); font: 400 .9375rem/1 var(--display); }
+  li strong, .soft strong { color: var(--text); }
+  .soft { color: var(--text-soft); margin: 0; font-size: .9375rem; }
+  a { color: var(--rose); font-weight: 600; }
 </style>

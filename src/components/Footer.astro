@@ -3,9 +3,22 @@ import { site } from '../config/site';
 ---
 <footer class="foot">
   <div class="wrap grid">
-    <div>
+    <div class="brand">
+      <img src="/media/logo.webp" alt="Myth Mayhem" width="900" height="300" loading="lazy" />
       <h2 class="visually-hidden">Credits</h2>
       <ul class="credits">{site.credits.map((c) => <li>{c}</li>)}</ul>
+    </div>
+    <div id="contact" class="contact">
+      <h2>Contact us</h2>
+      <p>Questions, bug reports or press? Write to us.</p>
+      <div class="mailbox">
+        <a class="mail" href={`mailto:${site.contact}`}>{site.contact}</a>
+        <button type="button" class="copy" data-copy={site.contact} aria-label={`Copy ${site.contact}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 9h10v11H9zM5 15V4h10" /></svg>
+          <span>Copy</span>
+        </button>
+      </div>
+      <p class="copied" role="status" aria-live="polite"></p>
     </div>
     <nav aria-label="Footer">
       <ul>
@@ -13,19 +26,57 @@ import { site } from '../config/site';
         <li><a href="/cards">Card gallery</a></li>
         <li><a href="/docs">Design docs</a></li>
         <li><a href="/#install">Install help</a></li>
+        <li><a href="#contact">Contact us</a></li>
       </ul>
     </nav>
     <p class="fine">Myth Mayhem v{site.version}. A student game built on Philippine mythology.</p>
   </div>
 </footer>
 
+<script>
+  // copy the email; falls back to selecting the text where the clipboard API is unavailable
+  function initCopy() {
+    const btn = document.querySelector<HTMLButtonElement>('.foot .copy');
+    const out = document.querySelector('.foot .copied');
+    if (!btn || !out) return;
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy!;
+      try {
+        await navigator.clipboard.writeText(text);
+        out.textContent = 'Email address copied.';
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(document.querySelector('.foot .mail')!);
+        getSelection()?.removeAllRanges();
+        getSelection()?.addRange(range);
+        out.textContent = 'Press Ctrl+C to copy the selected address.';
+      }
+      btn.querySelector('span')!.textContent = 'Copied';
+      setTimeout(() => { btn.querySelector('span')!.textContent = 'Copy'; out.textContent = ''; }, 2500);
+    });
+  }
+  document.addEventListener('astro:page-load', initCopy);
+</script>
+
 <style>
-  .foot { background: var(--muntin); color: var(--paper-soft); padding-block: var(--s7); font-size: .9375rem; }
+  .foot { position: relative; z-index: 1; padding-block: var(--s8) var(--s6); color: var(--text-soft); font-size: .9375rem; background: linear-gradient(180deg, transparent, rgb(11 6 20 / .9) 30%); }
+  .foot::before { content: ''; position: absolute; top: 0; left: 50%; translate: -50% 0; width: min(80%, 900px); height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .5; }
   .grid { display: grid; gap: var(--s6); }
-  @media (min-width: 768px) { .grid { grid-template-columns: 2fr 1fr; } .fine { grid-column: 1 / -1; } }
-  .credits { list-style: none; margin: 0; padding: 0; color: var(--paper); font-family: var(--display); font-size: 1.25rem; line-height: 1.4; display: grid; gap: var(--s2); }
+  @media (min-width: 900px) { .grid { grid-template-columns: 5fr 4fr 2fr; } .fine { grid-column: 1 / -1; } }
+  .contact h2 { font-size: 1.75rem; margin-bottom: var(--s2); color: var(--text); }
+  .contact p { margin: 0 0 var(--s4); }
+  .mailbox { display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line); border-radius: 999px; background: var(--glass); padding: 4px; gap: 4px; transition: border-color .3s var(--ease); }
+  .mailbox:hover { border-color: var(--line-gold); }
+  .mail { padding: 0 var(--s4); min-height: 40px; display: inline-flex; align-items: center; color: var(--text); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; }
+  .copy { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--s4); border: 0; border-radius: 999px; cursor: pointer; font: 600 .875rem var(--text-font); color: var(--on-gold); background: linear-gradient(135deg, #f3d79f, var(--gold) 60%, var(--gold-deep)); transition: transform .2s var(--ease), filter .2s var(--ease); flex: none; }
+  .copy:hover { filter: brightness(1.08); }
+  .copy:active { transform: scale(.96); }
+  .copy svg { width: 16px; height: 16px; }
+  .copied { min-height: 1.4em; margin: var(--s2) 0 0; font-size: .875rem; color: var(--gold); }
+  .brand img { width: 160px; height: auto; margin-bottom: var(--s4); }
+  .credits { list-style: none; margin: 0; padding: 0; color: var(--text); font-family: var(--display); font-size: 1.25rem; line-height: 1.4; display: grid; gap: var(--s2); }
   nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s1); }
-  nav a { display: inline-flex; min-height: 32px; align-items: center; color: var(--paper-soft); }
-  nav a:hover { color: var(--paper); }
-  .fine { margin: 0; }
+  nav a { display: inline-flex; min-height: 36px; align-items: center; color: var(--text-soft); text-decoration: none; transition: color .25s var(--ease), translate .3s var(--ease-out); }
+  nav a:hover { color: var(--text); translate: 4px 0; }
+  .fine { margin: 0; padding-top: var(--s5); border-top: 1px solid var(--line); font-size: .875rem; }
 </style>

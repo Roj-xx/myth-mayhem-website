@@ -19,6 +19,7 @@ title: "Myth Mayhem — Game Design Document (Rework)"
 | Cards.md | Developers, co-devs | The Set v1 card list, starter decks, gacha and crafting numbers, lore sources, balance changelog |
 | [Roadmap.md](/docs/roadmap) | Judges, partners, team | White paper: vision, milestones, competition scope, risks |
 | [UserManual.md](/docs/manual) | Players | A simple walkthrough of how to play |
+| [Releases.md](/docs/releases) | Everyone | What changed in each version, in plain words |
 | ImplementationPlan.md | Developers | Audit of v0.2.0, target architecture, build order and work packages |
 | UIGuide.md | Developers, artists | Screens that need reference pictures, the prefab list and the art each needs, prefab editing rules |
 

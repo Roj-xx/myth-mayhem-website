@@ -23,7 +23,7 @@ const walk = (dir) =>
   });
 
 // Docs: published docs link to each other's routes; links to unpublished files become plain text.
-const DOCS = { 'GDD.md': 'gdd', 'Roadmap.md': 'roadmap', 'UserManual.md': 'manual' };
+const DOCS = { 'GDD.md': 'gdd', 'Roadmap.md': 'roadmap', 'UserManual.md': 'manual', 'Releases.md': 'releases' };
 function syncDoc(file, route) {
   let md = readFileSync(need(join(GAME, 'Docs', file)), 'utf8').replace(/\r\n/g, '\n');
   md = md.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (all, text, href) => {
@@ -66,10 +66,13 @@ async function main() {
   writeFileSync(join(OUT, 'src/data/cards.json'), JSON.stringify(cards, null, 2) + '\n');
 
   const avatars = readdirSync(need(join(ART, 'Avatars'))).filter((f) => f.endsWith('.png'));
-  for (const f of avatars) await img(join(ART, 'Avatars', f), join(MEDIA, 'avatars', slug(f.slice(0, -4))), 640);
+  for (const f of avatars) {
+    await img(join(ART, 'Avatars', f), join(MEDIA, 'avatars', slug(f.slice(0, -4))), 640);
+    await img(join(ART, 'Avatars', f), join(MEDIA, 'avatars', slug(f.slice(0, -4)) + '-160'), 160); // small tab icons
+  }
 
   const hero = need(join(ART, 'Backgrounds/Hero.png'));
-  for (const w of [1600, 2560]) await img(hero, join(MEDIA, `hero-${w}`), w);
+  for (const w of [900, 1600, 2560]) await img(hero, join(MEDIA, `hero-${w}`), w);
   await img(need(join(ART, 'Branding/LogoGold.png')), join(MEDIA, 'logo'), 900);
   const icon = need(join(ART, 'Branding/AppIcon.png'));
   await sharp(icon).resize(512).png().toFile(join(MEDIA, 'icon-512.png'));

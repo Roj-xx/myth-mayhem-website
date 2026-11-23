@@ -10,96 +10,141 @@ const buttons = [
   { ...windows, os: 'Windows', icon: icons.windows },
 ];
 const live = buttons.filter((b) => b.available);
-const panes = Array.from({ length: 12 });
+// embers: fixed pseudo-random positions so the build is deterministic
+const embers = Array.from({ length: 22 }, (_, i) => ({
+  left: (i * 37) % 100,
+  delay: ((i * 13) % 22) * 0.45,
+  dur: 9 + ((i * 7) % 8),
+  size: 2 + ((i * 5) % 4),
+}));
 ---
 <section class="hero" aria-labelledby="hero-title">
-  <div class="wrap grid">
+  <div class="stage" aria-hidden="true">
+    <div class="moon" data-depth="18" data-scroll="0.18"></div>
+    <div class="ring" data-depth="26" data-scroll="0.12"></div>
+    <div class="figure" data-depth="42" data-scroll="0.06">
+      <picture>
+        <source srcset="/media/hero-900.avif 900w, /media/hero-1600.avif 1600w" sizes="(min-width: 1000px) 52vw, 92vw" type="image/avif" />
+        <img src="/media/hero-900.webp" srcset="/media/hero-900.webp 900w, /media/hero-1600.webp 1600w" sizes="(min-width: 1000px) 52vw, 92vw" alt="" width="1600" height="2000" fetchpriority="high" decoding="async" />
+      </picture>
+    </div>
+    <div class="embers">{embers.map((e) => <i style={`--l:${e.left}%;--d:${e.delay}s;--t:${e.dur}s;--s:${e.size}px`}></i>)}</div>
+  </div>
+
+  <div class="wrap content">
     <div class="copy">
-      <h1 id="hero-title">
+      <h1 id="hero-title" class="rise">
         <picture>
           <source srcset="/media/logo.avif" type="image/avif" />
           <img src="/media/logo.webp" alt="Myth Mayhem" width="900" height="300" />
         </picture>
       </h1>
-      <p class="pitch">{site.pitch}</p>
-      <div id="download" class="downloads">
-        {live.map((b) => (
-          <a class="btn btn-alay" href={b.url}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d={b.icon} /></svg>
-            {b.label}
-          </a>
-        ))}
+      <p class="tagline rise" style="--d:80ms">The old gods are waking. Choose what you'll give up.</p>
+      <p class="pitch rise" style="--d:160ms">{site.pitch}</p>
+
+      <div id="download" class="dl glass rise" style="--d:240ms">
+        <div class="buttons">
+          {live.map((b) => (
+            <a class="btn btn-primary magnetic" href={b.url}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d={b.icon} /></svg>
+              {b.label}
+            </a>
+          ))}
+        </div>
         <p class="meta">
-          Version {site.version}{live.map((b) => ` · ${b.os} ${b.file}, ${b.size}`).join('')}
-          {buttons.filter((b) => !b.available).map((b) => <><br />{b.os} build coming soon.</>)}
+          <span>Version {site.version}</span>
+          {live.map((b) => <span>{b.os} {b.file} · {b.size}</span>)}
+          {buttons.filter((b) => !b.available).map((b) => <span class="soon">{b.os} build coming soon</span>)}
         </p>
       </div>
-      <p class="judges"><a href="/docs">Read the design documents</a> or <a href="#install">get install help</a>.</p>
+      <p class="links rise" style="--d:320ms"><a href="/docs">Read the design documents</a><a href="#install">Install help</a></p>
     </div>
 
-    <div class="window" aria-hidden="true">
-      <picture>
-        <source srcset={`${site.poster}.avif`} type="image/avif" />
-        <img class="keyart" src={`${site.poster}.webp`} alt="" width="1600" height="2000" fetchpriority="high" />
-      </picture>
-      {site.trailer && <video class="trailer" muted loop playsinline preload="none" data-src={site.trailer}></video>}
-      <div class="panes">{panes.map((_, i) => <span style={`--i:${i}`}></span>)}</div>
-    </div>
+    {site.trailer && (
+      <figure class="clip glass glow-card rise" style="--d:400ms">
+        <video muted loop playsinline preload="none" poster="/media/gameplay-poster.webp" data-src={site.trailer} aria-label="Gameplay from a Vs AI match"></video>
+        <figcaption><span class="live"></span>Gameplay · Vs AI, v{site.version}</figcaption>
+      </figure>
+    )}
   </div>
+
+  <a class="cue" href="#match" aria-label="Scroll to how a match plays"><span></span></a>
 </section>
 
 <script>
-  // Load the trailer only when motion and data use are welcome; the key art stays otherwise.
-  function startTrailer() {
-    const v = document.querySelector<HTMLVideoElement>('.hero .trailer');
+  // Play the gameplay clip only when motion and data use are welcome; the poster stays otherwise.
+  function startClip() {
+    const v = document.querySelector<HTMLVideoElement>('.hero .clip video');
     if (!v || v.src) return;
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
     if (calm || saveData) return;
     v.src = v.dataset.src!;
-    v.addEventListener('playing', () => v.classList.add('on'), { once: true });
-    v.play().catch(() => {}); // autoplay blocked: the key art stays
+    v.play().catch(() => {});
   }
-  document.addEventListener('astro:page-load', startTrailer);
+  document.addEventListener('astro:page-load', startClip);
 </script>
 
 <style>
-  .hero { padding-block: var(--s6) var(--s7); overflow: hidden; }
-  .grid { display: grid; gap: var(--s5); align-items: center; }
-  @media (min-width: 900px) { .grid { grid-template-columns: 5fr 7fr; gap: var(--s7); min-height: min(80svh, 760px); } }
+  .hero { position: relative; min-height: calc(100svh - 76px); display: grid; align-items: start; overflow: clip; margin-top: -76px; padding-top: 76px; }
 
+  /* layered stage: each layer drifts with the cursor (--px/--py) and with scroll (--sy) */
+  .stage { position: absolute; inset: 0; pointer-events: none; }
+  .stage > * { position: absolute; translate: var(--px, 0) calc(var(--py, 0px) + var(--sy, 0px)); transition: translate .9s var(--ease-out); will-change: translate; }
+  .moon { width: min(54vw, 720px); aspect-ratio: 1; right: -4vw; top: 6vh; border-radius: 50%;
+    background: radial-gradient(circle at 38% 34%, #fff6fb, #f5bfdc 28%, #c9619d 60%, rgb(120 30 110 / 0) 72%);
+    box-shadow: 0 0 120px 10px rgb(240 139 192 / .28); opacity: .9; }
+  .ring { width: min(64vw, 860px); aspect-ratio: 1; right: -9vw; top: 0; border-radius: 50%; border: 1px solid rgb(233 196 126 / .25);
+    mask: linear-gradient(200deg, #000 20%, transparent 70%); animation: spin 90s linear infinite; }
+  .ring::after { content: ''; position: absolute; inset: 6%; border-radius: 50%; border: 1px dashed rgb(233 196 126 / .18); }
+  @keyframes spin { to { rotate: 360deg; } }
+  .figure { right: max(-2vw, calc(50% - 760px)); top: 84px; width: min(50vw, 720px); -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 92%); mask-image: linear-gradient(180deg, #000 62%, transparent 92%); }
+  .figure img { width: 100%; filter: drop-shadow(0 30px 60px rgb(20 0 40 / .7)) drop-shadow(0 0 40px rgb(194 38 122 / .35)); animation: float 9s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-14px) rotate(-.6deg); } }
+  .embers { inset: 0; }
+  .embers i { position: absolute; bottom: -10px; left: var(--l); width: var(--s); height: var(--s); border-radius: 50%; background: radial-gradient(circle, #ffe2b0, rgb(240 139 192 / .6) 60%, transparent); box-shadow: 0 0 10px rgb(255 200 150 / .8); opacity: 0; animation: rise var(--t) linear var(--d) infinite; }
+  @keyframes rise { 0% { transform: translate3d(0, 0, 0); opacity: 0; } 10% { opacity: .9; } 100% { transform: translate3d(30px, -95vh, 0); opacity: 0; } }
+
+  /* first-screen content is visible at once; it only settles into place */
+  @media (prefers-reduced-motion: no-preference) { .rise { animation: settle 1s var(--ease-out) both; animation-delay: var(--d, 0ms); } }
+  @keyframes settle { from { transform: translateY(18px); } }
+  .content { position: relative; z-index: 1; display: grid; gap: var(--s7); padding-block: var(--s5) var(--s9); }
+  @media (min-width: 1000px) { .content { grid-template-columns: minmax(0, 560px) 1fr; align-items: end; } }
   .copy { display: grid; gap: var(--s5); }
-  h1 img { width: min(100%, 480px); height: auto; }
-  .pitch { font-size: clamp(1.125rem, 2vw, 1.375rem); line-height: 1.5; max-width: 34ch; margin: 0; }
-  .downloads { display: flex; flex-wrap: wrap; gap: var(--s3); scroll-margin-top: 96px; }
-  .downloads .btn { min-height: 52px; }
-  .meta { flex-basis: 100%; margin: 0; color: var(--paper-soft); font-size: .9375rem; font-variant-numeric: tabular-nums; }
-  .judges { margin: 0; color: var(--paper-soft); }
-  .judges a { color: var(--paper); }
+  h1 img { width: min(100%, 500px); height: auto; filter: drop-shadow(0 6px 30px rgb(233 196 126 / .35)); }
+  .tagline { font: 400 clamp(1.75rem, 3.4vw, 2.75rem)/1.15 var(--display); margin: 0; max-width: 20ch; }
+  .pitch { margin: 0; color: var(--text-soft); font-size: clamp(1.0625rem, 1.5vw, 1.1875rem); max-width: 44ch; }
 
-  /* the capiz window: narra frame, muntins cross the art, pearl panes lit from behind */
-  .window { position: relative; isolation: isolate; aspect-ratio: 4 / 3; border: 10px solid var(--narra-raised); background: var(--narra-raised); overflow: hidden; }
-  .keyart { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
-  /* the trailer replaces the key art inside the window once it plays */
-  .trailer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s var(--ease); }
-  .trailer.on { opacity: 1; }
-  .panes { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
-  .panes span {
-    box-shadow: inset 0 0 0 calc(var(--muntin-w) / 2) var(--narra-raised);
-    background:
-      radial-gradient(ellipse at 50% 40%, rgb(255 248 232 / .34), rgb(238 230 216 / .12) 60%, rgb(220 208 189 / .28)),
-      conic-gradient(from 210deg at 70% 30%, rgb(255 240 250 / .10), rgb(230 245 255 / .10), rgb(255 236 200 / .10), rgb(255 240 250 / .10));
-    animation: warm .7s var(--ease) calc(var(--i) * 60ms + 150ms) both;
-  }
-  @keyframes warm { from { opacity: 0; } 55% { opacity: 1; filter: brightness(1.6); } }
+  .dl { display: grid; gap: var(--s4); padding: var(--s5); border-radius: var(--r-lg); scroll-margin-top: 110px; max-width: 600px; }
+  .buttons { display: flex; flex-wrap: wrap; gap: var(--s3); }
+  .buttons .btn { flex: 1 1 auto; white-space: nowrap; padding: 0 var(--s4); }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0; color: var(--text-soft); font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .meta .soon { flex-basis: 100%; }
+  .meta span + span:not(.soon)::before { content: ''; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--gold); margin-right: var(--s4); vertical-align: middle; opacity: .7; }
+  .links { display: flex; flex-wrap: wrap; gap: var(--s5); margin: 0; }
+  .links a { color: var(--text-soft); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .25s var(--ease), border-color .25s var(--ease); }
+  .links a:hover { color: var(--text); border-color: var(--gold); }
 
-  @media (max-width: 899px) {
-    .hero { padding-top: var(--s4); }
-    .window { order: -1; aspect-ratio: 16 / 9; border-width: 6px; }
-    .keyart { object-position: 50% 14%; }
-    h1 img { width: min(100%, 300px); }
-    .copy { gap: var(--s4); }
-    .downloads .btn { flex: 1 1 100%; }
+  .clip { justify-self: end; align-self: end; width: min(100%, 420px); margin: 0; padding: var(--s2); border-radius: var(--r); }
+  .clip video { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: calc(var(--r) - 8px); background: var(--bg-2); }
+  .clip figcaption { display: flex; align-items: center; gap: var(--s2); padding: var(--s3) var(--s2) var(--s1); font-size: .875rem; color: var(--text-soft); }
+  .live { width: 8px; height: 8px; border-radius: 50%; background: #ff5f8f; box-shadow: 0 0 0 0 rgb(255 95 143 / .7); animation: pulse 2s ease-out infinite; }
+  @keyframes pulse { to { box-shadow: 0 0 0 10px rgb(255 95 143 / 0); } }
+
+  .cue { position: absolute; left: 50%; bottom: var(--s5); translate: -50% 0; width: 28px; height: 44px; border-radius: 999px; border: 1px solid var(--line); z-index: 2; display: grid; justify-items: center; padding-top: 8px; }
+  .cue span { width: 4px; height: 8px; border-radius: 4px; background: var(--gold); animation: cue 2s var(--ease) infinite; }
+  @keyframes cue { 60% { transform: translateY(14px); opacity: 0; } 61% { transform: none; opacity: 0; } }
+
+  @media (max-width: 999px) {
+    .figure { width: min(92vw, 520px); right: -22vw; top: 2vh; opacity: .55; -webkit-mask-image: linear-gradient(180deg, #000 18%, transparent 58%); mask-image: linear-gradient(180deg, #000 18%, transparent 58%); }
+    .moon { width: 70vw; right: -20vw; top: 2vh; }
+    .ring { display: none; }
+    .content { padding-block: 26vh var(--s8); }
+    .clip { justify-self: stretch; width: 100%; }
+    .cue { display: none; }
   }
-  @media (prefers-reduced-motion: reduce) { .panes span { animation: none; } }
+  @media (max-width: 520px) { .content { padding-top: 11vh; gap: var(--s6); } .copy { gap: var(--s4); } .tagline { font-size: 1.625rem; } .buttons .btn { flex-basis: 100%; } .dl { padding: var(--s4); } }
+  @media (prefers-reduced-motion: reduce) { .embers { display: none; } }
+  :global(.lite) .embers, :global(.lite) .ring { display: none; }
+  :global(.lite) .figure img { animation: none; }
 </style>

@@ -71,43 +71,43 @@ const next = docs[i + 1];
 
   .doclist ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s2); }
   @media (min-width: 1100px) { .doclist ul { flex-direction: column; position: sticky; top: 96px; } }
-  .doclist a { display: inline-flex; min-height: 44px; align-items: center; padding: 0 var(--s3); text-decoration: none; color: var(--paper-soft); border-radius: 4px; }
-  .doclist a:hover { color: var(--paper); }
-  .doclist a[aria-current] { background: var(--lamp); color: var(--ink); }
+  .doclist a { display: inline-flex; min-height: 44px; align-items: center; padding: 0 var(--s3); text-decoration: none; color: var(--text-soft); border-radius: 999px; }
+  .doclist a:hover { color: var(--text); }
+  .doclist a[aria-current] { background: linear-gradient(135deg, #f3d79f, var(--gold) 60%, var(--gold-deep)); color: var(--on-gold); }
 
-  .toc details { background: var(--narra-raised); padding: var(--s3) var(--s4); }
-  @media (min-width: 1100px) { .toc details { position: sticky; top: 96px; max-height: calc(100dvh - 120px); overflow: auto; background: none; padding: 0; } }
-  .toc summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+  .toc details { background: rgb(255 255 255 / .04); border: 1px solid var(--line); border-radius: var(--r); padding: var(--s4) var(--s3); }
+  @media (min-width: 1100px) { .toc details { position: sticky; top: 104px; max-height: calc(100dvh - 128px); overflow: auto; } }
+  .toc summary { cursor: pointer; font-weight: 600; min-height: 32px; padding: 0 var(--s2); }
   .toc ul { list-style: none; margin: var(--s2) 0 0; padding: 0; font-size: .875rem; line-height: 1.4; }
-  .toc li a { display: block; padding: 4px 0; color: var(--paper-soft); text-decoration: none; }
-  .toc li a:hover { color: var(--paper); }
-  .toc .d3 { padding-left: var(--s3); }
+  .toc li a { display: block; padding: 6px var(--s2); border-radius: 8px; color: var(--text-soft); text-decoration: none; transition: background-color .2s var(--ease), color .2s var(--ease); }
+  .toc li a:hover { color: var(--text); background: rgb(255 255 255 / .06); }
+  .toc .d3 a { padding-left: var(--s5); font-size: .8125rem; }
 
   .prose { min-width: 0; font-size: 1.0625rem; line-height: 1.7; }
   .prose > h1 { font-size: clamp(2.25rem, 5vw, 3.25rem); margin-bottom: var(--s6); }
   .prose :global(h2) { font-size: clamp(1.75rem, 3.5vw, 2.25rem); margin: var(--s8) 0 var(--s4); scroll-margin-top: 88px; }
   .prose :global(h3) { font-size: 1.5rem; margin: var(--s6) 0 var(--s3); scroll-margin-top: 88px; }
-  .prose :global(h4) { font: 700 1.0625rem/1.4 var(--text); margin: var(--s5) 0 var(--s2); }
-  .prose :global(.anchor) { margin-left: .4em; color: var(--paper-soft); text-decoration: none; opacity: 0; font-family: var(--text); font-size: .7em; }
+  .prose :global(h4) { font: 700 1.0625rem/1.4 var(--text-font); margin: var(--s5) 0 var(--s2); }
+  .prose :global(.anchor) { margin-left: .4em; color: var(--text-soft); text-decoration: none; opacity: 0; font-family: var(--text-font); font-size: .7em; }
   .prose :global(h2:hover .anchor), .prose :global(h3:hover .anchor), .prose :global(.anchor:focus-visible) { opacity: 1; }
   .prose :global(p), .prose :global(li) { max-width: 70ch; }
   .prose :global(ul), .prose :global(ol) { padding-left: 1.25em; }
   .prose :global(li) { margin-block: .25em; }
-  .prose :global(strong) { color: var(--paper); font-weight: 700; }
-  .prose :global(hr) { border: 0; height: var(--muntin-w); background: var(--muntin); margin: var(--s7) 0; }
-  .prose :global(blockquote) { margin: var(--s4) 0; padding: var(--s3) var(--s4); background: var(--narra-raised); color: var(--paper-soft); }
-  .prose :global(code) { font-size: .9em; background: var(--narra-raised); padding: .1em .35em; border-radius: 3px; }
-  .prose :global(pre) { padding: var(--s4); overflow-x: auto; background: var(--muntin) !important; font-size: .875rem; line-height: 1.45; }
+  .prose :global(strong) { color: var(--text); font-weight: 700; }
+  .prose :global(hr) { border: 0; height: var(--s3); background: transparent; margin: var(--s7) 0; }
+  .prose :global(blockquote) { border-radius: var(--r-sm); border-left: 0; margin: var(--s4) 0; padding: var(--s3) var(--s4); background: rgb(255 255 255 / .05); color: var(--text-soft); }
+  .prose :global(code) { font-size: .9em; background: rgb(255 255 255 / .05); padding: .1em .35em; border-radius: 3px; }
+  .prose :global(pre) { border-radius: var(--r-sm); border: 1px solid var(--line); padding: var(--s4); overflow-x: auto; background: transparent !important; font-size: .875rem; line-height: 1.45; }
   .prose :global(pre code) { background: none; padding: 0; }
   .prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; margin: var(--s4) 0 var(--s5); font-size: .9375rem; line-height: 1.5; max-width: 100%; }
-  .prose :global(th), .prose :global(td) { padding: var(--s2) var(--s3); text-align: left; vertical-align: top; border-bottom: 1px solid var(--narra-raised); min-width: 8ch; }
+  .prose :global(th), .prose :global(td) { padding: var(--s2) var(--s3); text-align: left; vertical-align: top; border-bottom: 1px solid rgb(255 255 255 / .05); min-width: 8ch; }
   .prose :global(thead:not(:has(th:not(:empty)))) { display: none; }
-  .prose :global(th) { color: var(--paper); background: var(--narra-raised); font-weight: 700; }
-  .prose :global(td) { color: color-mix(in srgb, var(--paper) 88%, var(--paper-soft)); }
+  .prose :global(th) { color: var(--text); background: rgb(255 255 255 / .05); font-weight: 700; }
+  .prose :global(td) { color: var(--text-soft); }
 
-  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--muntin-w); background: var(--muntin); padding: var(--muntin-w); margin-top: var(--s8); }
-  .pager a { display: grid; gap: var(--s1); padding: var(--s4); background: var(--shell), var(--capiz); color: var(--ink); text-decoration: none; font-family: var(--display); font-size: 1.25rem; }
-  .pager a span { font: 400 .875rem var(--text); color: var(--ink-soft); }
+  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); background: transparent; padding: var(--s3); margin-top: var(--s8); }
+  .pager a { border-radius: var(--r); border: 1px solid var(--line); transition: background-color .3s var(--ease), border-color .3s var(--ease); display: grid; gap: var(--s1); padding: var(--s4); background: rgb(255 255 255 / .06); color: var(--text); text-decoration: none; font-family: var(--display); font-size: 1.25rem; }
+  .pager a span { font: 400 .875rem var(--text-font); color: var(--text-soft); }
   .pager .nx { text-align: right; grid-column: 2; }
-  .pager a:hover { background-color: color-mix(in srgb, var(--lamp) 22%, var(--capiz)); }
+  .pager a:hover { background-color: rgb(255 255 255 / .1); border-color: var(--line-gold); }
 </style>

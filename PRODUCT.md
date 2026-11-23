@@ -34,14 +34,14 @@ Philippine mythology as a full setting, not reskinned fantasy, with Filipino nam
 
 - Pages: landing, card gallery (55 cards: 44 deck cards + 11 Patron Gods), docs (GDD, Roadmap, User Manual).
 - Protected mysteries (GDD §2.2) are never resolved on the site: the relic's identity, the cause of the Awakening, why two Inheritors, the original separation, faction motives.
-- No in-game screenshots exist yet. No screenshots section until they do.
+- Real screenshots and a gameplay clip were captured from the v0.3.0 Windows build (account names blurred).
 - Copy is in English. Filipino terms are kept as-is (Alay, Tawag, Kara y Krus, god names).
 
 ## Brand Commitments
 
 - Name: Myth Mayhem. Logo: `LogoGold.png`. App icon: `AppIcon.png`.
 - Credits: **ELEMENTO**; **Marinduque State University — College of Information and Computing Sciences**.
-- Take mood from the game's UI and card art, but do **not** copy it 1:1. The user feels the art can read as AI-generated, so the site adds restraint and modern professionalism.
+- Look (user, 2026-11-23): expensive and elegant, a modern game site with gradients, a moving background, parallax, rounded corners, glass, hover effects, cursor tracking and animation. Palette drawn from the game's menus (violet night, magenta, gold).
 
 ## Evidence on Hand
 

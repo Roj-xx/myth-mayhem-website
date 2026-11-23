@@ -8,7 +8,7 @@ import '../styles/global.css';
 
 interface Props { title?: string; description?: string }
 const { title, description = site.pitch } = Astro.props;
-const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: a Philippine mythology card battler`;
+const fullTitle = title ? `${title} · ${site.name}` : site.name;
 ---
 <!doctype html>
 <html lang="en">
@@ -17,16 +17,26 @@ const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: a Philippi
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#24140f" />
+    <meta name="theme-color" content="#0b0614" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL('/media/hero-1600.webp', Astro.site)} />
+    <meta property="og:image" content={new URL('/og.jpg', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-text" preload />
     <ClientRouter />
   </head>
   <body>
+    <div class="sky" aria-hidden="true" transition:persist>
+      <div class="aurora"></div>
+      <div class="stars"></div>
+      <div class="glow"></div>
+      <div class="grain"></div>
+    </div>
     <a class="skip visually-hidden" href="#main">Skip to content</a>
     <Nav />
     <main id="main"><slot /></main>
@@ -34,6 +44,11 @@ const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: a Philippi
   </body>
 </html>
 
+<script>
+  import { initMotion } from '../scripts/motion';
+  document.addEventListener('astro:page-load', initMotion);
+</script>
+
 <style>
-  .skip:focus { position: fixed !important; top: 8px; left: 8px; width: auto; height: auto; clip-path: none; z-index: 100; padding: 8px 16px; background: var(--lamp); color: var(--ink); border-radius: 4px; }
+  .skip:focus { position: fixed !important; top: 8px; left: 8px; width: auto; height: auto; clip-path: none; z-index: 100; padding: 8px 16px; background: var(--gold); color: var(--on-gold); border-radius: 999px; }
 </style>

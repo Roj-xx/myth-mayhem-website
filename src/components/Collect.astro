@@ -1,0 +1,152 @@
+---
+import { site } from '../config/site';
+const pic = (id: string, alt: string, eager = false) => ({ id, alt, eager });
+const deck = pic('deck', 'The Deck Builder: a 20-card deck with a cost curve and a legal-deck check');
+const collection = pic('collection', 'The Card Collection with filters by type and rarity');
+const reveal = pic('reveal', 'Ten summoned cards revealed; duplicates turn into Abo');
+const packs = pic('packs', 'Card packs: five cards with at least one Rare, never a God');
+---
+<section id="collect" class="collect chapter" aria-labelledby="collect-title">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2 id="collect-title">Build your deck. Call the old gods.</h2>
+      <p class="lede">Collect all 55 cards, shape a 20-card deck around a patron god, and summon new cards through the Tawag. Every card has one version, so money can't buy a stronger card.</p>
+    </div>
+
+    <article class="feature reveal">
+      <div class="text">
+        <h3>The Deck Builder</h3>
+        <ul class="points">
+          <li><strong>20 cards and one patron god.</strong> Up to two copies of a card, and one of each Legendary.</li>
+          <li><strong>See your deck's shape.</strong> A cost curve shows if your deck plays fast or slow, and it tells you when your deck is legal.</li>
+          <li><strong>Find any card fast.</strong> Search and filter all 55 cards by type and rarity in the Card Collection.</li>
+          <li><strong>Start from a starter deck.</strong> Copy Night Hunters or Forest Guardians and make it your own.</li>
+        </ul>
+      </div>
+      <div class="media">
+        <button type="button" class="frame main glass glow-card" data-full={`/media/shots/${deck.id}-1600`} data-caption={deck.alt}>
+          <picture>
+            <source srcset={`/media/shots/${deck.id}-800.avif 800w, /media/shots/${deck.id}-1600.avif 1600w`} sizes="(min-width: 1000px) 640px, 100vw" type="image/avif" />
+            <img src={`/media/shots/${deck.id}-800.webp`} srcset={`/media/shots/${deck.id}-800.webp 800w, /media/shots/${deck.id}-1600.webp 1600w`} sizes="(min-width: 1000px) 640px, 100vw" alt={deck.alt} width="800" height="450" loading="lazy" />
+          </picture>
+        </button>
+        <button type="button" class="frame side glass glow-card" data-full={`/media/shots/${collection.id}-1600`} data-caption={collection.alt}>
+          <picture>
+            <source srcset={`/media/shots/${collection.id}-800.avif`} type="image/avif" />
+            <img src={`/media/shots/${collection.id}-800.webp`} alt={collection.alt} width="800" height="450" loading="lazy" />
+          </picture>
+        </button>
+      </div>
+    </article>
+
+    <article class="feature flip reveal">
+      <div class="text">
+        <h3>The Tawag: summon cards and gods</h3>
+        <ul class="points">
+          <li><strong>One pull, one card or god.</strong> Gods are the rarest, and you're guaranteed one by your 90th pull.</li>
+          <li><strong>A featured god on every banner,</strong> at boosted odds. The odds and your pull history are always one tap away.</li>
+          <li><strong>Duplicates become Abo.</strong> Use Abo to craft any card or god you're missing.</li>
+          <li><strong>Card packs:</strong> five cards with at least one Rare, bought with Ginto you earn by playing. Packs never contain gods.</li>
+        </ul>
+      </div>
+      <div class="media">
+        <figure class="frame main glass glow-card clipframe">
+          <video muted loop playsinline preload="none" poster="/media/tawag-poster.webp" data-src="/media/tawag.mp4" aria-label="A ten-card summon: the circle glows, ten cards land face down, then flip"></video>
+        </figure>
+        <button type="button" class="frame side glass glow-card" data-full={`/media/shots/${reveal.id}-1600`} data-caption={reveal.alt}>
+          <picture>
+            <source srcset={`/media/shots/${reveal.id}-800.avif`} type="image/avif" />
+            <img src={`/media/shots/${reveal.id}-800.webp`} alt={reveal.alt} width="800" height="450" loading="lazy" />
+          </picture>
+        </button>
+        <button type="button" class="frame side2 glass glow-card" data-full={`/media/shots/${packs.id}-1600`} data-caption={packs.alt}>
+          <picture>
+            <source srcset={`/media/shots/${packs.id}-800.avif`} type="image/avif" />
+            <img src={`/media/shots/${packs.id}-800.webp`} alt={packs.alt} width="800" height="450" loading="lazy" />
+          </picture>
+        </button>
+      </div>
+    </article>
+
+    <p class="note reveal">In v{site.version}, collecting is a demo: you get free demo currency, nothing is sold, and matches still use the starter decks. <a href="/docs/manual#14-collecting-cards-demo-in-this-build">How collecting works</a></p>
+  </div>
+
+  <dialog class="lightbox" aria-label="Screenshot">
+    <form method="dialog"><button class="close btn btn-glass">Close</button></form>
+    <img src="/media/shots/deck-1600.webp" alt="" width="1600" height="900" />
+    <p></p>
+  </dialog>
+</section>
+
+<script>
+  function initCollect() {
+    const root = document.querySelector('.collect');
+    if (!root) return;
+    const v = root.querySelector<HTMLVideoElement>('video');
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    // load the clip only when it scrolls near, and only when motion and data are welcome
+    if (v && !calm && !saveData && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([en]) => {
+        if (!en.isIntersecting) return;
+        v.src = v.dataset.src!;
+        v.play().catch(() => {});
+        io.disconnect();
+      }, { rootMargin: '200px' });
+      io.observe(v);
+    }
+    const dlg = root.querySelector<HTMLDialogElement>('.lightbox')!;
+    const img = dlg.querySelector('img')!;
+    const cap = dlg.querySelector('p')!;
+    let opener: HTMLElement | null = null;
+    root.querySelectorAll<HTMLButtonElement>('button.frame').forEach((b) => b.addEventListener('click', () => {
+      opener = b;
+      img.src = `${b.dataset.full}.webp`;
+      img.alt = b.dataset.caption!;
+      cap.textContent = b.dataset.caption!;
+      dlg.showModal();
+    }));
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => opener?.focus());
+  }
+  document.addEventListener('astro:page-load', initCollect);
+</script>
+
+<style>
+  .feature { display: grid; gap: var(--s6); align-items: center; margin-top: var(--s7); }
+  @media (min-width: 1000px) { .feature { grid-template-columns: 5fr 7fr; gap: var(--s8); } .flip { grid-template-columns: 7fr 5fr; } .flip .text { order: 2; } }
+  h3 { font-size: clamp(1.875rem, 3vw, 2.5rem); margin-bottom: var(--s5); }
+  .points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4); }
+  .points li { position: relative; padding-left: var(--s6); color: var(--text-soft); }
+  .points li::before { content: ''; position: absolute; left: 4px; top: .55em; width: 9px; height: 9px; rotate: 45deg; background: linear-gradient(135deg, #f3d79f, var(--gold)); box-shadow: 0 0 10px rgb(233 196 126 / .6); }
+  .points strong { color: var(--text); }
+
+  /* a large shot with smaller ones overlapping its corner */
+  .media { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto; padding-bottom: var(--s8); }
+  .frame { margin: 0; padding: 6px; border-radius: var(--r); display: block; width: 100%; color: inherit; font: inherit; cursor: zoom-in; border: 1px solid var(--line); }
+  .frame picture, .frame img, .frame video { display: block; width: 100%; border-radius: calc(var(--r) - 6px); }
+  .frame img, .frame video { aspect-ratio: 16 / 9; object-fit: cover; transition: transform .8s var(--ease-out); }
+  .frame:hover img { transform: scale(1.04); }
+  .frame picture { overflow: hidden; }
+  .main { grid-column: 1 / 12; grid-row: 1; }
+  .side { grid-column: 7 / 13; grid-row: 1; align-self: end; translate: 0 var(--s8); z-index: 1; box-shadow: 0 30px 60px -20px rgb(0 0 0 / .8); }
+  .side2 { display: none; }
+  .clipframe { cursor: default; }
+  .clipframe video { background: var(--bg-2); }
+  @media (min-width: 1000px) {
+    .flip .main { grid-column: 2 / 13; }
+    .flip .side { grid-column: 1 / 6; }
+    .flip .side2 { display: block; grid-column: 9 / 13; grid-row: 1; align-self: start; translate: 0 calc(-1 * var(--s6)); z-index: 1; box-shadow: 0 30px 60px -20px rgb(0 0 0 / .8); }
+  }
+
+  .note { margin: var(--s7) 0 0; padding: var(--s4) var(--s5); border-radius: var(--r); border: 1px solid var(--line); background: var(--glass); color: var(--text-soft); font-size: .9375rem; }
+  .note a { color: var(--gold); }
+
+  .lightbox { padding: 0; border: 0; background: transparent; color: var(--text); max-width: min(1200px, calc(100vw - 2 * var(--gutter))); width: 100%; overflow: visible; }
+  .lightbox::backdrop { background: rgb(11 6 20 / .85); }
+  .lightbox[open] { animation: zoom .4s var(--ease-out); }
+  @keyframes zoom { from { opacity: 0; transform: scale(.96); } }
+  .lightbox img { width: 100%; border-radius: var(--r); }
+  .lightbox p { text-align: center; color: var(--text-soft); margin: var(--s3) 0 0; }
+  .close { position: absolute; top: -60px; right: 0; min-height: 44px; }
+</style>

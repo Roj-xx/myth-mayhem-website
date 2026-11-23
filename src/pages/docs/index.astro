@@ -8,9 +8,9 @@ import { docs } from '../../config/docs';
       <h1>Design documents</h1>
       <p class="lede">Everything behind the game, readable in the browser. Judges: start with the Roadmap for the overview, then the GDD for the detail.</p>
     </div>
-    <ul class="lattice list">
+    <ul class="list">
       {docs.map((d) => (
-        <li class="pane">
+        <li class="glass glow-card lift">
           <a href={`/docs/${d.slug}`}>
             <h2>{d.name}</h2>
             <p>{d.blurb}</p>
@@ -22,12 +22,14 @@ import { docs } from '../../config/docs';
 </Base>
 
 <style>
+  .docs-index { position: relative; }
   .docs-index { padding-block: var(--s7) var(--chapter); }
   h1 { font-size: clamp(2.5rem, 6vw, 4rem); }
-  .list { list-style: none; margin: 0; grid-template-columns: 1fr; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4); grid-template-columns: 1fr; }
   @media (min-width: 860px) { .list { grid-template-columns: repeat(3, 1fr); } }
-  li a { display: grid; gap: var(--s3); padding: var(--s6) var(--s5); height: 100%; text-decoration: none; color: var(--ink); transition: background-color .2s var(--ease); }
-  li a:hover { background: color-mix(in srgb, var(--lamp) 22%, var(--capiz)); }
+  li { border-radius: var(--r-lg); }
+  li a { border-radius: inherit; display: grid; gap: var(--s3); padding: var(--s6) var(--s5); height: 100%; text-decoration: none; color: var(--text); transition: background-color .2s var(--ease); }
+  li a:hover { background: rgb(255 255 255 / .1); }
   h2 { font-size: 2rem; }
-  li p { margin: 0; color: var(--ink-soft); }
+  li p { margin: 0; color: var(--text-soft); }
 </style>

@@ -27,14 +27,12 @@ const typeName = (t: string) => TYPES.find(([k]) => k === t)![1].slice(0, -1);
       <div class="chips" role="group" aria-label="Rarity">
         {Object.entries(RARITY).map(([k, label]) => <button type="button" class="chip" data-rarity={k} aria-pressed="false">{label}</button>)}
       </div>
-      <label class="sort">
-        <span>Sort</span>
-        <select name="sort">
-          <option value="id">Set order</option>
-          <option value="cost">Cost</option>
-          <option value="name">Name</option>
-        </select>
-      </label>
+      <div class="sort" role="group" aria-labelledby="sort-label">
+        <span id="sort-label">Sort</span>
+        <button type="button" class="chip" data-sort="id" aria-pressed="true">Set order</button>
+        <button type="button" class="chip" data-sort="cost" aria-pressed="false">Cost</button>
+        <button type="button" class="chip" data-sort="name" aria-pressed="false">Name</button>
+      </div>
     </form>
 
     <p class="count" aria-live="polite"><span data-count>{cards.length}</span> cards</p>
@@ -56,19 +54,19 @@ const typeName = (t: string) => TYPES.find(([k]) => k === t)![1].slice(0, -1);
     </ul>
     <div class="empty" hidden>
       <p>No cards match your search.</p>
-      <button type="button" class="btn btn-line reset">Clear search and filters</button>
+      <button type="button" class="btn btn-glass reset">Clear search and filters</button>
     </div>
   </section>
 
   <dialog class="detail" aria-labelledby="d-name">
     <div class="d-wrap">
       <picture><img class="d-art" src={`${cards[0].art}.webp`} alt="" width="480" height="672" loading="lazy" /></picture>
-      <div class="d-info pane">
+      <div class="d-info glass">
         <p class="d-meta"></p>
         <h2 id="d-name"></h2>
         <dl class="d-stats"></dl>
         <p class="d-id"></p>
-        <form method="dialog"><button class="btn btn-line">Close</button></form>
+        <form method="dialog"><button class="btn btn-glass">Close</button></form>
       </div>
     </div>
   </dialog>
@@ -88,37 +86,38 @@ const typeName = (t: string) => TYPES.find(([k]) => k === t)![1].slice(0, -1);
 
   .tools { display: grid; gap: var(--s3); margin-bottom: var(--s4); }
   @media (min-width: 1000px) { .tools { grid-template-columns: minmax(260px, 1fr) auto; } .tools .chips:nth-of-type(2) { grid-column: 1; } .sort { grid-column: 2; grid-row: 2; justify-self: end; } }
-  input, select { min-height: 44px; border-radius: 4px; border: 1.5px solid var(--paper-soft); background: var(--narra-raised); color: var(--paper); font: 1rem var(--text); padding: 0 var(--s3); }
+  input { min-height: 48px; border-radius: 999px; border: 1px solid var(--line); background: rgb(255 255 255 / .05); padding-inline: var(--s5) !important; color: var(--text); font: 1rem var(--text-font); padding: 0 var(--s3); }
   input { width: 100%; }
-  input::placeholder { color: var(--paper-soft); }
-  input:focus-visible, select:focus-visible { border-color: var(--lamp); outline-offset: 0; }
+  input::placeholder { color: var(--text-soft); }
+  input:focus-visible { border-color: var(--gold); outline-offset: 0; }
   .chips { display: flex; flex-wrap: wrap; gap: var(--s2); }
   .chip { min-height: 40px; }
-  .sort { display: flex; align-items: center; gap: var(--s2); color: var(--paper-soft); }
-  .count { color: var(--paper-soft); margin: 0 0 var(--s4); font-variant-numeric: tabular-nums; }
+  .sort { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); color: var(--text-soft); }
+  .sort span { margin-right: var(--s1); }
+  .count { color: var(--text-soft); margin: 0 0 var(--s4); font-variant-numeric: tabular-nums; }
 
   .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s5) var(--s4); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   @media (min-width: 900px) { .grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
-  .tile { display: grid; gap: var(--s1); width: 100%; padding: 0; border: 0; background: none; color: var(--paper); text-align: left; cursor: pointer; perspective: 800px; }
+  .tile { display: grid; gap: var(--s1); width: 100%; padding: 0; border: 0; background: none; color: var(--text); text-align: left; cursor: pointer; perspective: 800px; }
   .tile img { border-radius: 10px; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .2s var(--ease), box-shadow .2s var(--ease); box-shadow: 0 6px 18px -8px rgb(0 0 0 / .6); }
-  .tile:hover img, .tile:focus-visible img { box-shadow: 0 14px 28px -10px rgb(0 0 0 / .7), 0 0 0 2px var(--lamp); }
+  .tile:hover img, .tile:focus-visible img { box-shadow: 0 14px 28px -10px rgb(0 0 0 / .7), 0 0 0 2px var(--gold); }
   .tile:focus-visible { outline: none; }
   .name { font: 400 1.25rem/1.2 var(--display); margin-top: var(--s2); }
-  .meta { color: var(--paper-soft); font-size: .875rem; }
+  .meta { color: var(--text-soft); font-size: .875rem; }
   /* a filtered-in card is pulled from the rack: it turns from its edge to its face */
   .grid li.dealt .tile img { animation: deal .32s var(--ease) both; }
   @keyframes deal { from { transform: rotateY(80deg); opacity: .2; } }
 
-  .empty { text-align: center; padding: var(--s8) 0; color: var(--paper-soft); }
+  .empty { text-align: center; padding: var(--s8) 0; color: var(--text-soft); }
 
   .detail { padding: 0; border: 0; background: transparent; color: inherit; max-width: min(920px, calc(100vw - 2 * var(--gutter))); width: 100%; max-height: calc(100dvh - 32px); }
-  .detail::backdrop { background: color-mix(in srgb, var(--muntin) 85%, transparent); }
-  .d-wrap { display: grid; gap: var(--muntin-w); background: var(--muntin); padding: var(--muntin-w); }
+  .detail::backdrop { background: rgb(11 6 20 / .8); }
+  .d-wrap { display: grid; gap: var(--s5); align-items: center; }
   @media (min-width: 720px) { .d-wrap { grid-template-columns: 320px 1fr; } }
   .d-art { width: min(320px, 70vw); margin: var(--s4) auto; border-radius: 12px; view-transition-name: none; }
   @media (min-width: 720px) { .d-art { margin: 0; width: 100%; } }
-  .d-info { padding: var(--s6); display: grid; align-content: start; gap: var(--s2); }
-  .d-meta, .d-id { color: var(--ink-soft); margin: 0; font-size: .9375rem; }
+  .d-info { border-radius: var(--r-lg); padding: var(--s6); display: grid; align-content: start; gap: var(--s2); }
+  .d-meta, .d-id { color: var(--text-soft); margin: 0; font-size: .9375rem; }
   .d-info h2 { font-size: clamp(2rem, 5vw, 3rem); }
   .d-stats { margin: var(--s3) 0; display: grid; gap: var(--s1) var(--s4); grid-template-columns: max-content 1fr; }
   .d-stats dt { font-weight: 700; }

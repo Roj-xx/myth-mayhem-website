@@ -1,76 +1,57 @@
 # Myth Mayhem — Design System
 
-Our own language. Structural references only (from `awesome-design-md`):
-**PlayStation**, for marketing told in full-bleed chapters where a change of surface *is* the divider and the art does the storytelling; and **Mintlify**, for docs with a sidebar, a ~720px prose column and an on-page TOC. No colours, type or components are taken from either.
+**Direction (set by the user, 2026-11-23):** expensive and elegant, like a modern game launch site. It uses gradients, a moving background, parallax, rounded corners, glass, hover effects, cursor tracking, transitions and animation. The palette comes from the game's own menus: a moonlit violet night, magenta and gold.
 
-## World: the capiz window
+Structural references (from `awesome-design-md`, structure only): **PlayStation**, for marketing told in chapters where the art does the storytelling; **Mintlify**, for docs with a sidebar, a ~720px prose column and an on-page TOC.
 
-The bahay na bato's sliding window: thin panes of **capiz shell** set in a lattice of dark **narra** wood. By day the panes are pearly and translucent; at night, lit from inside, they glow amber. It's the Boundary, made domestic: a membrane between inside and outside, the seen and the unseen.
+## World: the moonlit Boundary
 
-- **Wood is the ground.** Dark narra carries the page.
-- **Panes are the content fields.** Luminous, light regions set into the wood.
-- **The muntin gap is structure.** Grids are wood showing between panes. We don't draw borders, rules or cards with shadows.
-- **The game's art is the colour.** Card art and god portraits stay saturated. The chrome stays quiet around them.
+- **The sky is the ground.** A fixed, slowly drifting aurora (violet, magenta, a touch of gold), a star field, film grain, and a soft light that follows the cursor (`.sky` in `Base.astro`). No section has a flat solid background.
+- **Glass carries the content.** Panels are frosted glass with a 1px light rim and an inner highlight. On hover the rim turns gold and a spotlight follows the cursor inside the panel (`.glass` + `.glow-card`).
+- **The game's art is the colour.** Key art, card art, god portraits and real screenshots stay saturated and are never recoloured.
 
-Why dark: players open this on a phone in the evening, and the card art is luminous. Judges see the same page. The lit-window-at-night scene settles it.
-
-## Colour (strategy: committed, wood + pane)
+## Colour
 
 | Token | Hex | Role |
 |---|---|---|
-| `--narra` | `#24140F` | Page ground (wood) |
-| `--narra-raised` | `#331D16` | Wood surfaces one step up: nav, dialog, inputs on wood |
-| `--muntin` | `#3B2219` | The lattice gap between panes (a lighter narra, so muntins read as wood, not black frames) |
-| `--capiz` | `#EEE6D8` | Pane field (light regions) |
-| `--capiz-deep` | `#DCD0BD` | Pane shade, pane-on-pane, table stripes |
-| `--ink` | `#24140F` | Text on capiz |
-| `--ink-soft` | `#5B4A40` | Secondary text on capiz (≥7:1) |
-| `--paper` | `#F2EADF` | Text on wood |
-| `--paper-soft` | `#BFAA9B` | Secondary text on wood (≥7:1) |
-| `--lamp` | `#F3B95F` | Lamplight: focus ring, active state, glow behind panes. Never body text on capiz |
-| `--alay` | `#B81F4E` | The offering colour: primary action (Download) and the Alay concept only |
-| `--alay-hover` | `#D02A5D` | |
+| `--bg` | `#0B0614` | Night base |
+| `--bg-2` | `#150A26` | Media placeholders |
+| `--plum` / `--violet` | `#2A0F4A` / `#4A1D86` | Sky and gradient body |
+| `--magenta` | `#C2267A` | Primary actions (with violet), aurora |
+| `--rose` | `#F08BC0` | Moon, highlights, links in install steps |
+| `--gold` / `--gold-deep` | `#E9C47E` / `#B98A3E` | Focus, selected state, rims, numbers |
+| `--text` / `--text-soft` | `#F6EFFA` / `#C9BADB` | Text |
+| `--on-gold` | `#1C0F24` | Text on gold |
+| `--glass`, `--line`, `--line-gold` | white at 5.5% / 12%, gold at 45% | Glass fill, rims |
 
-Rules: `--alay` appears only on download actions and Alay content, so it always means "commit". `--lamp` marks "this is live/selected". No gradients as decoration. The only glow is lamp light behind a pane.
+The primary button is a magenta-to-violet gradient with a gold glint that sweeps across on hover. The selected state (chips, tabs, doc pills) is a gold gradient with `--on-gold` text.
 
 ## Type
 
-- **Display: Marcellus** (single weight, flared Roman). It echoes the carved flare of the game logo without copying it. Used only for page and section titles, in sentence case, 2rem and up. Never in all caps or for labels.
-- **Text & UI: Atkinson Hyperlegible Next** (variable 200–800). Body, UI, docs and data.
-- Scale (1.25, rem): 0.8 · 1 · 1.25 · 1.563 · 1.953 · 2.441 · 3.052 · clamp(3rem, 8vw, 5.5rem) for the hero.
-- Body 1.0625rem/1.65 on wood, 1.0625rem/1.7 in docs. Measure ≤ 70ch. Headings: more space above than below.
-- Filipino terms are set in the running text style, never italicised as "foreign".
+- **Display: Marcellus.** Classical, flared Roman, for titles in sentence case.
+- **Text & UI: Manrope** (variable 200–800).
+- Scale: h2 `clamp(2.25rem, 5vw, 3.75rem)`, hero tagline `clamp(1.75rem, 3.4vw, 2.75rem)`, body 1rem/1.65, lede ~1.2rem.
 
-## Space & layout
+## Shape, space, depth
 
-- Base 8px. Tokens: 4, 8, 12, 16, 24, 32, 48, 72, 112.
-- Chapters: 112px vertical on desktop, 72px on mobile. Gutters: 16px mobile, 32px tablet, 48px desktop. Max content 1200px; docs 3-column (nav 220 · prose ≤720 · TOC 200).
-- **Lattice grid**: a `display:grid` container whose background is `--muntin` and whose `gap` (6px) is the muntin. Children are panes. It's used for the gods picker, match board, modes and gallery.
+- Radius: 28px (large panels), 20px (cards, media), 12px (small surfaces), 999px (buttons, chips, nav bar, inputs).
+- Base 8px; chapters 72px on mobile, 120px on desktop; gutters 16, 32 and 48px; max width 1240px.
+- Depth: glass with blur(18px), a soft long shadow, and a coloured glow on hover. There are no hard borders.
 
-## Shape & depth
+## Motion (`src/scripts/motion.ts`)
 
-- Radius: 0 on structure (bands, lattice, panes); 4px on inputs; 999px on every button and chip (one control shape).
-- Depth comes from light, not shadow: the active pane gets `box-shadow: 0 0 0 2px var(--lamp), 0 0 32px -8px var(--lamp)`. There are no resting shadows.
-- Capiz material (`.pane`): lit from behind. A radial lamp-white centre, a faint conic nacre sheen and cloudy `feTurbulence` shell noise over `--capiz`. Static and cheap.
-- Hero window: the key art is clipped inside a narra-framed 4×3 lattice. Pearl panes sit over it, and the trailer plays inside the window with screen blend (switch to normal blend for a full-colour trailer).
+- **Hero:** a layered stage (moon, a slowly turning gold ring, the key-art figure, mist, rising embers). Each layer moves with the cursor (`data-depth`) and with scroll (`data-scroll`). The figure floats.
+- **Cursor:** a page-wide light, spotlights inside cards, magnetic buttons. These run only with a fine pointer and full motion.
+- **Scroll reveals:** `.reveal` fades, rises and un-blurs once, staggered with `--d`. First-screen content never starts hidden (`.rise` only settles into place).
+- **Interaction:** card tilt in the gallery, the halo around the selected god, the path toggle sliding in, the match board's step states, and Astro view transitions between pages.
+- Durations: 250ms (hover), 450ms (state), 900ms (reveal). Easing is `cubic-bezier(.16,1,.3,1)`.
+- **Reduced motion:** no aurora drift, parallax, embers, cursor effects, reveals or video autoplay. Everything is visible and static.
 
-## Motion
+## Media
 
-- Durations: 120ms (press), 200ms (hover/state), 320ms (pane slide), 600ms (page-load lamp sequence). Easing `cubic-bezier(.2,.7,.2,1)`. Exits are 30% faster.
-- **One orchestrated moment**: on hero load the lattice behind the key art warms pane by pane (lamp light), once.
-- **Signature interaction**: sliding panes. The Separation/Control toggle slides the window, and the match explainer moves between board states.
-- Cross-page: Astro view transitions. The nav persists, and a gallery tile morphs into its detail view.
-- Card tilt: fine pointers only, max 8°.
-- `prefers-reduced-motion: reduce`: no load sequence, tilt, slide or video. Changes are instant cross-fades of ≤120ms or none.
-
-## Components
-
-- **Button**: pill, 48px tall (44px minimum touch). Primary = `--alay` fill, `--paper` text. Secondary = 1.5px `--paper-soft` outline on wood, or `--ink` outline on capiz. Labels say exactly what happens ("Download for Android").
-- **Pane**: a `--capiz` field, 24–32px padding, ink text, no radius.
-- **Chip/filter**: 36–44px tall, pill, `aria-pressed`. The active state is `--lamp` fill with `--ink` text.
-- **Focus**: 2px `--lamp` outline, 2px offset, everywhere.
-- **Nav**: wood bar, logo left, links right (Cards, Docs, Download). Download is the one pill.
+- Real screenshots from the v0.3.0 Windows build are in `public/media/shots/` (battle, deck builder, collection, Tawag, packs) (AVIF + WebP, 800 and 1600 wide, account names blurred). A gameplay loop is in `public/media/gameplay.mp4` (cropped to the board, no audio). The clip plays in the hero's floating glass frame. `public/media/tawag.mp4` (a ten-card summon) plays in the Collection section. Both play only with full motion and no Save-Data, and pause off screen.
+- Low-end devices (4 cores or fewer, 4 GB of memory or less, or Save-Data) get a `lite` class. It stops the ambient motion (aurora drift, stars, embers, ring, cursor light, parallax) but keeps the look. Glass panels use no backdrop blur; only the nav bar does.
 
 ## Voice
 
-Plain, specific and in the second person: "Pick a patron god", not "Discover divine power". Copy hints at the mysteries but never resolves them: the relic's identity, the cause of the Awakening, why two Inheritors, the original separation, faction motives. Errors and empty states say what happened and what to do next.
+Plain, specific, second person. Copy hints at the mysteries and never resolves them: the relic's identity, the cause of the Awakening, why two Inheritors, the original separation, faction motives.

@@ -1,28 +1,14 @@
 ---
-const beats = [
-  { title: 'The Forgotten World', text: 'The human world and the spirit world once lived side by side. Fear and conflict drove them apart, people forgot, and the aswang, the diwata and the old gods faded into legend.' },
-  { title: 'The Awakening', text: 'Something old has stirred. Mythical beings are waking and ancient rivalries are coming back. What woke them, no one knows yet.' },
-  { title: 'The two Inheritors', text: 'Only two people can summon these beings: you and one rival. Neither of you knew your heritage. You are not destined enemies; your choices set you against each other.' },
-  { title: 'The Relic', text: 'Both of you seek an ancient relic said to move the border between the worlds. What it is, and what it costs, is still unknown.' },
-];
 ---
-<section class="world chapter" aria-labelledby="world-title">
+<section id="world" class="world chapter" aria-labelledby="world-title">
   <div class="wrap">
-    <div class="head">
+    <div class="head reveal">
       <h2 id="world-title">The Boundary is thinning</h2>
-      <p class="lede">You meet your rival where the two worlds touch. Every match is a battle over what happens to both of them.</p>
+      <p class="lede">The human world and the spirit world were split long ago. Now the old beings are waking, and only two Inheritors can summon them: you, and your rival. Every match is a fight over what happens to both worlds.</p>
     </div>
 
-    <ol class="beats lattice">
-      {beats.map((b) => (
-        <li class="pane beat">
-          <h3>{b.title}</h3>
-          <p>{b.text}</p>
-        </li>
-      ))}
-    </ol>
 
-    <div class="paths">
+    <div class="paths glass reveal">
       <div class="paths-copy">
         <h3>Two paths. Neither is simply right.</h3>
         <p class="soft">Pick a side to see what each Inheritor is fighting for. The path you take changes the story, not the rules.</p>
@@ -32,7 +18,7 @@ const beats = [
         </div>
       </div>
       <div class="slider" data-path="separation">
-        <div class="panel pane" aria-live="polite">
+        <div class="panel" aria-live="polite">
           <div class="side" data-side="separation">
             <h4>Seal the worlds apart</h4>
             <p>Close the Boundary forever, so humanity is never at the mercy of the spirit world again.</p>
@@ -46,7 +32,6 @@ const beats = [
         </div>
       </div>
     </div>
-    <p class="question">Is peace worth the loss of connection? Can order justify the loss of freedom?</p>
   </div>
 </section>
 
@@ -67,37 +52,26 @@ const beats = [
 </script>
 
 <style>
-  .beats { list-style: none; margin: 0; grid-template-columns: 1fr; counter-reset: beat; }
-  @media (min-width: 720px) { .beats { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .beats { grid-template-columns: repeat(4, 1fr); } }
-  .beat { padding: var(--s6) var(--s5); }
-  .beat h3 { font-size: 1.5rem; margin-bottom: var(--s3); }
-  .beat p { margin: 0; color: var(--ink-soft); }
 
-  /* scroll-driven: each pane catches the lamp as it enters view */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .beat { animation: lamp linear both; animation-timeline: view(); animation-range: entry 10% cover 45%; }
-      @keyframes lamp { from { background-color: var(--capiz-deep); } to { background-color: var(--capiz); } }
-    }
-  }
-
-  .paths { display: grid; gap: var(--s6); margin-top: var(--s8); align-items: center; }
-  @media (min-width: 900px) { .paths { grid-template-columns: 5fr 6fr; gap: var(--s8); } }
-  .paths-copy h3 { font-size: clamp(1.75rem, 3vw, 2.25rem); margin-bottom: var(--s3); }
-  .soft { color: var(--paper-soft); max-width: 44ch; }
+  .paths { display: grid; gap: var(--s6); align-items: center; padding: var(--s6); }
+  @media (min-width: 900px) { .paths { grid-template-columns: 5fr 6fr; gap: var(--s7); padding: var(--s7); } }
+  .paths-copy h3 { font-size: clamp(1.75rem, 3vw, 2.375rem); margin-bottom: var(--s3); }
+  .soft { color: var(--text-soft); max-width: 44ch; }
   .toggle { display: flex; flex-wrap: wrap; gap: var(--s2); }
   .toggle .chip { min-height: 44px; }
 
-  /* a sliding window: the new side slides in from the direction you chose */
-  .slider { position: relative; overflow: hidden; background: var(--muntin); padding: var(--muntin-w); }
+  .slider { border-radius: var(--r); border: 1px solid var(--line); overflow: hidden; position: relative; isolation: isolate; }
+  .slider::before, .slider::after { content: ''; position: absolute; inset: 0; z-index: -1; transition: opacity .6s var(--ease); }
+  .slider::before { background: radial-gradient(120% 140% at 0% 0%, rgb(194 38 122 / .32), transparent 60%), radial-gradient(120% 140% at 100% 100%, rgb(74 29 134 / .5), transparent 60%); }
+  .slider::after { opacity: 0; background: radial-gradient(120% 140% at 100% 0%, rgb(233 196 126 / .24), transparent 60%), radial-gradient(120% 140% at 0% 100%, rgb(74 29 134 / .55), transparent 60%); }
+  .slider[data-path='control']::before { opacity: 0; }
+  .slider[data-path='control']::after { opacity: 1; }
   .panel { min-height: 220px; padding: var(--s6); display: grid; align-content: center; }
-  .panel h4 { font: 400 1.75rem/1.2 var(--display); margin: 0 0 var(--s3); }
-  .panel p { margin: 0 0 var(--s2); color: var(--ink-soft); max-width: 48ch; }
-  .panel .cost { color: var(--ink); font-weight: 700; margin: 0; }
-  .side { animation: slide-in .32s var(--ease); }
-  .slider[data-path='control'] .side { --from: 24px; }
-  @keyframes slide-in { from { opacity: 0; translate: var(--from, -24px) 0; } }
+  .panel h4 { font: 400 clamp(1.75rem, 3vw, 2.25rem)/1.15 var(--display); margin: 0 0 var(--s3); }
+  .panel p { margin: 0 0 var(--s2); color: var(--text-soft); max-width: 48ch; }
+  .panel .cost { color: var(--gold); font-weight: 600; margin: 0; }
+  .side { animation: slide-in .45s var(--ease-out); }
+  .slider[data-path='control'] .side { --from: 28px; }
+  @keyframes slide-in { from { opacity: 0; translate: var(--from, -28px) 0; } }
 
-  .question { font: 400 clamp(1.5rem, 3vw, 2rem)/1.3 var(--display); text-align: center; max-width: 30ch; margin: var(--s8) auto 0; text-wrap: balance; }
 </style>

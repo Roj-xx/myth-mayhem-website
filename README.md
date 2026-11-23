@@ -17,11 +17,12 @@ All of them live in **`src/config/site.ts`**:
 |---|---|
 | Version shown on the site | `version` |
 | Android download link and size | `downloads.android.url`, `downloads.android.size` |
-| Windows download link and size | `downloads.windows.url`, `downloads.windows.size` (now `TBC`) |
-| Trailer | `trailer`. Put the new `.mp4` in `public/media/` and point this at it |
+| Windows download link and size | `downloads.windows.url`, `downloads.windows.size` |
+| Hero video | `trailer`. Now a gameplay clip from the Windows build; put a new `.mp4` in `public/media/` and point this at it |
+| Windows on/off | `downloads.windows.available` |
 | Credits | `credits` |
 
-The Android link points at the `v0.3.0` release in `myth-mayhem-android-download`, so update it for each new APK. The Windows link uses `releases/latest`, so it never needs editing as long as the file name stays the same.
+Both links use GitHub's `releases/latest/download/...` form on `Roj-xx/myth-mayhem-android-download`, so a new release needs no website change, as long as it keeps the file names `MythMayhem.apk` and `MythMayhem-Windows.zip`. Windows has an `available` switch for times when there is no zip.
 
 ## Syncing content from the game
 
@@ -33,7 +34,7 @@ npm run sync
 
 It copies:
 
-- `Docs/GDD.md`, `Docs/Roadmap.md` and `Docs/UserManual.md` → `src/content/docs/`. Links between these three become site links; links to unpublished docs become plain text.
+- `Docs/GDD.md`, `Docs/Roadmap.md`, `Docs/UserManual.md` and `Docs/Releases.md` → `src/content/docs/`. Links between these three become site links; links to unpublished docs become plain text.
 - `Docs/Cards.md` → `src/data/cards.json`. The tables in sections 3–7 are read by card ID (`MM-CORE-001`…, `MM-GOD-001`…). The sync stops with an error if the counts change in a way it doesn't expect.
 - Card art, god and Inheritor portraits, the key art (`Hero.png`), the logo and the app icon → `public/media/`, as AVIF + WebP at web sizes.
 - `Splash Video H264.mp4` → `public/media/trailer.mp4`.
@@ -49,9 +50,19 @@ If you add, remove or rename cards, update the expected counts in `scripts/cards
 1. In Unity, build Windows to a folder, for example `Builds/Windows/`.
 2. Zip the **contents** of that folder (`Myth Mayhem.exe`, the `Myth Mayhem_Data` folder, `UnityPlayer.dll`, `MonoBleedingEdge`, `D3D12` and so on) into **`MythMayhem-Windows.zip`**.
    **Leave out** any folder ending in `_BurstDebugInformation_DoNotShip` or `_BackUpThisFolder_ButDontShipItWithYourGame`. They're debug files, not part of the game.
-3. On GitHub, open this repo → **Releases** → **Draft a new release** → tag it, for example `v0.3.0` → attach `MythMayhem-Windows.zip` → **Publish**.
+3. On GitHub, open `Roj-xx/myth-mayhem-android-download` → **Releases** → the version's release (for example `v0.3.0`) → ✏️ **Edit** → drag `MythMayhem-Windows.zip` in next to the APK → **Update release**.
 4. Keep the same file name for every release, so the download button keeps working.
-5. Put the zip's size in `downloads.windows.size`.
+5. Put the zip's size in `downloads.windows.size` and set `downloads.windows.available` to `true`.
+
+## Screenshots and gameplay video
+
+`public/media/shots/`, `public/media/gameplay.mp4` and `public/media/tawag.mp4` were captured from the v0.3.0 Windows build (Vs AI) with ffmpeg, with account names blurred. They are not part of `npm run sync`. Recapture them when the game's look changes.
+
+## Releasing a new version
+
+1. Upload the APK and the Windows zip to a new GitHub release, with the same file names.
+2. Add a short entry at the top of `Docs/Releases.md` in the game repo.
+3. Change `version` and the sizes in `src/config/site.ts`, run `npm run sync`, then commit and push.
 
 ## Deploying
 

@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" description="This page doesn't exist. Head back to Myth Mayhem.">
+  <section class="lost wrap">
+    <div class="card" data-depth="24">
+      <picture>
+        <source srcset="/media/cards/MM-CORE-012.avif" type="image/avif" />
+        <img src="/media/cards/MM-CORE-012.webp" alt="The Tikbalang card" width="480" height="672" />
+      </picture>
+    </div>
+    <div class="copy glass">
+      <p class="code">404</p>
+      <h1>A Tikbalang led you astray</h1>
+      <p>The page you were looking for isn't here. It may have moved, or the link may be mistyped.</p>
+      <div class="actions">
+        <a class="btn btn-primary magnetic" href="/">Back to the home page</a>
+        <a class="btn btn-glass" href="/cards">Browse the cards</a>
+        <a class="btn btn-glass" href="/docs">Read the docs</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost { min-height: calc(100svh - 220px); display: grid; gap: var(--s7); align-items: center; padding-block: var(--s7); }
+  @media (min-width: 860px) { .lost { grid-template-columns: 320px 1fr; } }
+  .card { justify-self: center; width: min(280px, 70vw); translate: var(--px, 0) var(--py, 0); transition: translate .9s var(--ease-out); }
+  .card img { border-radius: 18px; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .8), 0 0 60px rgb(194 38 122 / .3); animation: sway 6s ease-in-out infinite; }
+  @keyframes sway { 50% { transform: rotate(-3deg) translateY(-10px); } }
+  .copy { padding: var(--s7) var(--s6); display: grid; gap: var(--s4); }
+  .code { margin: 0; font: 400 clamp(4rem, 12vw, 7rem)/1 var(--display); color: var(--gold); }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); }
+  .copy p:not(.code) { color: var(--text-soft); margin: 0; max-width: 46ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s3); }
+</style>

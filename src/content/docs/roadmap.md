@@ -1,179 +1,133 @@
 ---
-title: "Myth Mayhem — Development Roadmap (White Paper)"
+title: "Myth Mayhem — Development Roadmap"
 ---
 
-*A turn-based card battler built on Philippine mythology*
+*A 1v1 card battler built on Philippine mythology*
 
 | | |
 |---|---|
-| Version | 1.1 |
-| Date | 2026-11-16 |
+| Version | 2.0 |
+| Updated | 2026-11-23 |
+| Game version | **v0.3.0** (Android and Windows) |
 | Engine | Unity 6 (URP) |
-| Platforms | Android, iOS, Windows (cross-play) |
-| Companion documents | [GDD.md](/docs/gdd) · Cards.md · [UserManual.md](/docs/manual) · ImplementationPlan.md · UIGuide.md |
+| Related documents | [GDD.md](/docs/gdd) (full rules) · [UserManual.md](/docs/manual) (how to play) · [Releases.md](/docs/releases) (what changed in each version) |
 
 ---
 
-## 1. Executive summary
+## 1. The short version
 
-**Myth Mayhem** is a 1v1 turn-based card battler. Two Inheritors summon the
-beings of Philippine mythology (Aswang, Tikbalang, Bakunawa and others) and
-fight across three lanes on the Boundary between the human and spirit worlds.
+**Myth Mayhem** is a 1v1 card game. Two Inheritors summon creatures from
+Philippine mythology (Aswang, Tikbalang, Bakunawa and more) and fight across
+three lanes on the Boundary between the human world and the spirit world.
 
-Its signature mechanic is **Alay** (offering): players can sacrifice cards
-and creatures for power. That gives every turn a "what am I willing to give
-up?" decision that standard card battlers don't have.
+What makes it different is **Alay** (offering). You can give up your own
+cards or creatures to get more power right now. Every turn asks: *what am I
+willing to give up?*
 
-The project already has a working v0.2.0 build: 3-lane combat, AI and
-online PvP, mobile polish. This paper lays out the rework from that build
-into a full, lore-faithful, fair free-to-play game, in **six milestones**,
-with a **competition build** that shows the core experience first.
+Today, v0.3.0 is a complete, playable match on Android and Windows: a
+tutorial, matches against the AI, and online play with a friend. This roadmap
+says what comes next, in three phases: **Now**, **Next** and **Later**. It
+also covers how we grow the game into a fair, competitive game that people
+can play in tournaments.
 
 ---
 
 ## 2. Why this game
 
-| Opportunity | How Myth Mayhem answers it |
+| The opportunity | How Myth Mayhem answers it |
 |---|---|
-| Philippine mythology is rich but underused in games | A whole setting built from it: 24 creatures, 11 deities from five pantheons, and real rituals, places and artifacts, each checked against folklore sources |
-| Card battlers tend to feel the same | Alay adds a sacrifice layer on top of familiar summoning, and a Domain affinity triangle adds a fight over the battlefield itself |
-| Gacha games are seen as pay-to-win | Every card has one fixed stat line, everything can be crafted, and Gods can't be bought directly. Paying speeds up collecting; it doesn't buy power. |
-| Mobile sessions are short | Matches take 6–10 minutes, with 30-second turns and a turn limit built in |
-| Players want to switch devices | One account on phone and PC, with cross-play |
+| Philippine mythology is rich, but few games use it | The whole game is built on it: 44 cards, plus 11 gods from five regional pantheons, each checked against folklore sources |
+| Many card games feel the same | Alay adds a "give something up" choice to every turn. Domains add a fight over the battlefield itself |
+| Players worry that paying beats skill | Every card has one fixed set of stats, and anything can be crafted. Money can't buy stronger cards |
+| People play on the go | A match takes 6–10 minutes, with 30-second turns |
+| People switch devices | Play on a phone or a PC, and play each other online |
 
 ---
 
-## 3. The game at a glance
+## 3. The game in one minute
 
-- **Goal:** reduce the enemy Inheritor from **100 HP to 0**.
-- **Board:** 3 lanes. Each side has a creature slot and a Building slot per
-  lane, plus one shared Domain slot.
-- **Turn:**
-  1. Gain summon points (SP) and draw a card.
-  2. Play cards and optionally offer Alay.
-  3. Your creatures strike automatically, lane by lane.
-- **Card types:**
-  - **Creatures:** summoned beings that fight in the lanes.
-  - **Rituals:** spells.
-  - **Domains:** battlefield-wide effects with a Nature > Human > Spirit triangle.
-  - **Buildings:** temporary lane structures.
-  - **Patron Gods:** one per deck, with a passive and a charged power.
-- **First player:** decided by **Kara y Krus**, a fair agimat coin toss.
-- **Modes:** Vs AI, Casual PvP (quick match and lobby codes), Ranked, Story.
-- **Collection:** the Tawag gacha (one pull = one card or God; Gods are the
-  rarest, guaranteed by pull 90), Abo crafting, a Ginto shop and story rewards.
+- **Win** by bringing your rival from **100 HP to 0**.
+- **The board** has 3 lanes. Each lane holds one creature and one Building per side. One Domain sits in the shared middle slot.
+- **Each turn** you get summon points (SP), draw a card, play cards, and maybe make an **Alay**. When you end your turn, your creatures attack on their own.
+- **Card types:** Creatures, Rituals, Domains, Buildings, and your **patron God**, who helps from above.
+- **Kara y Krus**, a coin toss, decides who goes first.
+- **The Boundary Collapse:** from round 7, both players lose HP every round, so matches always end.
 
-Full rules: [GDD.md](/docs/gdd). Player-facing guide: [UserManual.md](/docs/manual).
+Full rules are in the [GDD](/docs/gdd). The player's guide is the [User Manual](/docs/manual).
 
 ---
 
-## 4. Where we are today (v0.2.0)
+## 4. Where we are now (v0.3.0)
 
-| Already built | Changes in the rework |
-|---|---|
-| 3 lanes × 2 sides, summon points, deck and hand | Kept; the numbers are retuned |
-| Combat at the end of the opponent's turn | Replaced: your creatures strike at the end of your turn, (only Guard creatures hit back) |
-| 12 cards (7 creatures, 3 supports, 2 buildings) | Expanded to 44 cards plus 11 patron Gods |
-| AI opponent (one random play per turn) | Rebuilt to understand Alay, with 3 difficulty levels |
-| Online PvP (Netcode for GameObjects, Unity Relay, lobby codes) | Kept for casual play; matchmaking added |
-| Tutorial slideshow, intro cinematic, mobile polish | The tutorial becomes interactive; the cinematic is reused |
-| 3D arena with Meshy-generated models | Kept, with a new HUD; models for the new cards are added over time (placeholders until then) |
+**Done and playable:**
 
-**Engine decision:** we evaluated Godot and chose to **stay on Unity**. Godot
-wouldn't fix the visuals on its own, since they come from the assets and
-animation, not the engine. Switching would also mean rewriting working
-networking, tooling and the mobile pipeline. Effort goes into art and
-animation instead.
+- The full rules engine: every rule is tested in code (over 880 automated tests).
+- **Tutorial:** one guided match that teaches every mechanic.
+- **Vs AI** on three difficulties: Baguhan, Mandirigma, Bagani.
+- **Online play with a friend** using a room code, across phone and PC, with automatic reconnect.
+- Kara y Krus, the starting hand swap, card details, the Domain clash animation, and attack effects for every creature.
+- Builds for **Android** and **Windows**.
 
----
+**Not done yet:**
 
-## 5. Milestones
+- Quick Match against strangers, Ranked, and Story mode (they show as "coming soon" in the game).
+- Accounts that save your progress across devices.
+- Store releases (today you install the APK or ZIP from our download page).
 
-Each milestone has a single goal and a clear exit test. Target dates are left
-for the team to set based on team size and the competition calendar. The
-work packages inside each milestone are in
-ImplementationPlan.md.
-
-```
- M1 Rules core ─► M2 Vertical slice ─► M3 Online casual ─► M4 Collection & accounts ─► M5 Ranked & story ─► M6 Content & polish
- └───────── Competition build (M1 + M2 + the lobby part of M3) ─────────┘
-```
-
-### M1: Rules core
-| | |
-|---|---|
-| **Goal** | Every rule in the GDD works in code, without any graphics. |
-| **Deliverables** | A plain C# rules engine (game state, turns, Alay, strikes, keywords, abilities, Domains, Buildings, Gods), unit tests for every rule, and an AI-vs-AI simulation harness |
-| **Exit criteria** | All rules are unit-tested, and 10,000 simulated matches run and report match length, first-player win rate and card win rates |
-| **Why first** | Local play, the AI and the online server all share this one rules engine, so it has to be right first |
-| **Target date** | ____ |
-
-### M2: Playable vertical slice
-| | |
-|---|---|
-| **Goal** | A complete, good-looking match a stranger can pick up and play. |
-| **Deliverables** | New HUD, the Alay altar UX, Kara y Krus, the opponent-turn view, both starter decks, 3 starter Gods, a few showcase Legendaries, Vs AI (3 difficulties), and the interactive tutorial |
-| **Exit criteria** | A 10-minute match plays from start to finish on PC and Android, and a new player finishes the tutorial without help |
-| **Target date** | ____ |
-
-**Status (2026-11-19, on the loop branches, not merged).** M1 is complete: every rule is unit-tested and traced in RulesTraceability.md (888 Core tests), and balance option B is applied (Boundary Collapse from round 7). Built for M2 and M3 but waiting on human checks: the interactive tutorial (copy needs a play-test by a new player), the turn clock and timers, PvP on the new core (host-authoritative, hidden hands, 60 s reconnect, placeholder emotes) and the cutover to the new scenes with audio settings. Still open: the real two-device PvP test, the 10-minute PC and Android match, and the approval to remove the old v0.2.0 code.
-
-### M3: Online casual
-| | |
-|---|---|
-| **Goal** | Two players on different devices play a fair match. |
-| **Deliverables** | Netcode on top of the rules engine, the lobby code flow (already working), Quick Match matchmaking, and reconnects |
-| **Exit criteria** | 100 consecutive two-device matches finish without a desync |
-| **Target date** | ____ |
-
-### M4: Collection, economy and accounts
-| | |
-|---|---|
-| **Goal** | Players own cards and accounts that persist across devices. |
-| **Deliverables** | Guest-first accounts with platform sign-in and cross-progression, XP and levels, deck builder, collection screen, the three currencies (Ginto, Mutya, Abo), Tawag gacha with pity, crafting, the Ginto shop, IAP (in sandbox), age gate, and account deletion |
-| **Exit criteria** | Pulls are resolved by the server, the odds screen is published, and a purchase made on one device shows up on the other |
-| **Target date** | ____ |
-
-### M5: Ranked and story
-| | |
-|---|---|
-| **Goal** | Competitive play and the narrative layer. |
-| **Deliverables** | An authoritative match server, ranked seasons (Baguhan to Maalamat), new-player protection, and story Chapter 1 for both the Separation and Control paths |
-| **Exit criteria** | The ranked queue passes a test using bot players, and both story chapters are playable from start to finish |
-| **Target date** | ____ |
-
-### M6: Content and polish
-| | |
-|---|---|
-| **Goal** | Launch quality. |
-| **Deliverables** | The full Set v1 (44 cards and 11 Gods), new art and animation in a consistent style, the Alay VFX, kulintang-based audio, and a balance pass |
-| **Exit criteria** | Simulation and playtests meet every balance target in §7 |
-| **Target date** | ____ |
+See [Releases.md](/docs/releases) for what changed in each version.
 
 ---
 
-## 6. Competition build
+## 5. The plan: Now, Next, Later
 
-For the game development competition we show the **core identity of the
-game**, not its business systems.
+We plan in phases instead of fixed dates, so the plan stays true as the team's schedule changes.
 
-| Shown | Deferred (and why) |
+### Now: polish for the competition and first players
+| Goal | What it means |
 |---|---|
-| The full new rules: Alay, lane strikes, keywords, Domains, Buildings, Gods | **Accounts and levels:** backend-heavy, and invisible on stage |
-| Vs AI and the interactive tutorial | **Gacha, currencies, IAP:** need a server and compliance work |
-| Kara y Krus and the opponent-turn view | **Ranked and matchmaking:** need a player base and a server |
-| Both starter decks, the 3 starter Gods and the showcase deck with Bakunawa, Sarimanok and Manananggal (Cards.md §8) | **Story campaign:** content-heavy; the intro cinematic covers the setting |
-| Two-player PvP through the existing lobby codes | **Server saves:** a local profile (name and settings) is enough |
-| A **demo** of the collection, deck builder, Tawag and card packs, saved on the device (MetaDemoPlan.md) | **The real M4 economy:** the demo has no purchases, no server and no effect on matches |
+| A smooth first match | Play-test the tutorial with new players and fix anything that confuses them |
+| Rock-solid online play | Test 100 online matches in a row between two devices, with no out-of-sync games |
+| Fair balance | Run thousands of AI-vs-AI matches and fix any card or god that wins too often |
+| Better art and feel | Replace placeholder models, add the Alay effects, finish the sound |
 
-**Demo script (about 5 minutes):**
-1. The intro cinematic sets up the lore.
-2. Kara y Krus decides who goes first.
-3. Turns 1–3 show summoning and lane strikes.
-4. An Alay turn: sacrifice a creature, then play a big Legendary.
-5. A Domain clash shows the affinity triangle.
-6. A God power swings the board.
-7. The finishing blow and win screen.
+### Next: grow the player base
+| Goal | What it means |
+|---|---|
+| **Google Play release** | Publish on the Google Play Store, so players install with one tap and get updates automatically |
+| **Accounts** | Sign in once, and keep your cards and progress on phone and PC |
+| **Collection** | The deck builder, card collection, crafting and the Tawag (card summons), with the odds always shown |
+| **Quick Match** | Get matched against a player of similar skill, no room code needed |
+| **Story, Chapter 1** | The first chapter for both paths, Separation and Control |
+
+### Later: competitive play and more stories
+| Goal | What it means |
+|---|---|
+| **Ranked seasons** | Climb from Baguhan to Maalamat, with a fresh season every few months |
+| **Apple App Store** | Bring the game to iPhone and iPad |
+| **More story chapters** | Each chapter hints at more of the world's mysteries, without solving them all |
+| **New card sets** | New creatures from folklore, such as Sigbin, Amomongo, Busaw, Mambabarang and Engkanto |
+| **Tournaments and esports** | See section 6 |
+
+---
+
+## 6. The competitive path (esports)
+
+Myth Mayhem's core already fits competitive play. Matches are short, both
+players start equal, the coin toss is fair, and skill comes from choices
+(where to play, when to make an Alay), not from luck or spending. To meet the
+standards players expect from competitive card games, we plan to add:
+
+| Area | What we will add | Why it matters |
+|---|---|---|
+| **Fairness** | Equal card access in Ranked and tournaments, published balance targets, and regular balance updates | Wins come from skill, not from a bigger collection |
+| **Matchmaking** | Skill rating, ranked seasons, and protection for new players | Fair, close matches at every level |
+| **Security** | A game server that checks every move, and checks that both players see the same match | No cheating, no "my game showed something else" |
+| **Tournament tools** | Private lobbies with set rules, best-of-3 matches, and a tournament deck list check | Schools, clubs and organisers can run events easily |
+| **Watching** | Spectator mode, match replays, and a clear match history | Players learn from good matches, and events can be streamed |
+| **Deeper strategy** | More cards per set, deck-building limits that reward planning, and a fair way to choose patron gods in tournaments (for example, each player bans one god) | More ways to outplay an opponent |
+| **Community** | Student and campus leagues first, then regional online cups | Grow a scene from the Philippines outward |
+
+We will only call a feature "competitive-ready" when it passes the success targets in section 7.
 
 ---
 
@@ -182,38 +136,31 @@ game**, not its business systems.
 | Area | Target |
 |---|---|
 | Match length | 6–10 minutes on average |
-| Fairness | First-player win rate between 48% and 52% |
-| Card health | No card above a 40% play rate; every card's win rate within ±5% of average |
-| Alay adoption | 2–5 offerings per player per match |
-| Onboarding | At least 80% of new players finish the tutorial |
-| Stability | No desyncs across 100 consecutive online matches |
+| Fairness | Whoever goes first wins between 48% and 52% of the time |
+| Card health | No card in more than 40% of decks; every card wins within ±5% of the average |
+| Alay | Players make 2–5 offerings per match |
+| Learning | At least 80% of new players finish the tutorial |
+| Online stability | 100 online matches in a row with no out-of-sync games |
 
 ---
 
 ## 8. Risks and how we handle them
 
-| Risk | Impact | Mitigation |
-|---|---|---|
-| Balance problems such as first-player advantage or Alay combos | High | AI-vs-AI simulation from M1, values marked [tune], and three balance passes already applied |
-| Online desync or cheating | High | One shared rules engine, a server-authoritative design, and snapshot hash checks |
-| Pay-to-win perception | High | Fixed stats, everything craftable, Gods not sold directly |
-| Gacha regulations (odds disclosure, regional restrictions, minors) | Medium | Published odds and pity, an age gate, spending caps, and a per-region legal review before launch |
-| Server costs for ranked | Medium | Ranked deferred to M5; casual keeps using Relay |
-| Art quality (placeholder AI models) | Medium | Gameplay is built first; art and animation get a dedicated milestone (M6) |
-| Misrepresenting folklore | Medium | Every card is checked against sources (Cards.md §11), and doubtful figures were replaced |
-| Scope creep | Medium | The out-of-scope list (GDD §12) and the competition scope (§6 above) |
+| Risk | How we handle it |
+|---|---|
+| Some cards or gods are too strong | Thousands of AI-vs-AI test matches, and every number can be tuned |
+| Cheating or out-of-sync online games | One shared rules engine, and a server that checks every move |
+| "Pay to win" worries | Fixed card stats, everything craftable, gods can't be bought directly |
+| Rules for card summons (gacha) in different countries | Show the odds, guarantee a god within a set number of pulls, add an age check and spending limits, and review the rules country by country before launch |
+| Server costs | Start small with casual play; add Ranked servers only when players are there |
+| Art quality | Gameplay first, then a dedicated art and animation phase |
+| Getting the folklore wrong | Every card is checked against sources, and doubtful figures were replaced |
+| Doing too much at once | Each phase has a short list, and new ideas wait for the next phase |
 
 ---
 
 ## 9. Beyond launch
 
-- **Story expansions:** each one can reveal a little more of the five
-  protected mysteries (the Relic, the Awakening, why only two Inheritors exist,
-  the original separation, and the factions' true motives) without resolving
-  them.
-- **New card sets:** expansion folklore candidates include Sigbin, Amomongo,
-  Busaw, Mambabarang, Engkanto, Mangkukulam, Bal-Bal and Hukluban (as a creature).
-- **Live operations:** seasonal ranked, featured God banners, and the Landas
-  season pass.
-- **Cultural partnerships:** working with folklorists and educators on lore
-  accuracy and in-game folklore notes.
+- **Story expansions:** each one shows a little more of the world's five big mysteries (the Relic, the Awakening, why only two Inheritors exist, the original separation, and what the factions really want) without solving them.
+- **Live events:** seasonal Ranked, featured god banners, and a season pass.
+- **Working with experts:** folklorists and teachers help keep the lore accurate and could help bring the game to classrooms.

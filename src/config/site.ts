@@ -6,23 +6,23 @@ export const site = {
   downloads: {
     android: {
       label: 'Download for Android',
-      url: 'https://github.com/Roj-xx/myth-mayhem-android-download/releases/download/v0.3.0/MythMayhem.apk',
+      url: 'https://github.com/Roj-xx/myth-mayhem-android-download/releases/latest/download/MythMayhem.apk',
       size: '312 MB',
       file: 'APK',
       available: true,
     },
     windows: {
       label: 'Download for Windows',
-      url: 'https://github.com/Roj-xx/myth-mayhem-website/releases/latest/download/MythMayhem-Windows.zip',
-      size: 'TBC', // fill in once MythMayhem-Windows.zip is published
+      url: 'https://github.com/Roj-xx/myth-mayhem-android-download/releases/latest/download/MythMayhem-Windows.zip',
+      size: '366 MB',
       file: 'ZIP',
-      available: false, // set to true once the release has MythMayhem-Windows.zip attached
+      available: true, // false shows "coming soon" instead of a link
     },
   },
-  // The hero trailer plays inside the capiz window. Drop the real trailer into public/media/
-  // and set this to its path, e.g. '/media/trailer.mp4'. Empty = show the key art only.
-  // (The current trailer.mp4 is the splash logo sting, which doubled the logo over the art.)
-  trailer: '',
+  // Gameplay clip in the hero (recorded from the v0.3.0 Windows build). Swap in a real trailer
+  // by dropping it into public/media/ and changing this path. Empty = hide the clip.
+  trailer: '/media/gameplay.mp4',
   poster: '/media/hero-1600',
+  contact: 'mythmayhem2026@gmail.com',
   credits: ['ELEMENTO', 'Marinduque State University — College of Information and Computing Sciences'],
 };
